@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <h2>Registered Restaurants</h2>
+    {% for restaurant in vibanda%}
+    <div>
+        <p>Restaurant Name: <a href={% url 'kibanda_info' restaurant.id %}>{{restaurant.brand_name}}</a></p>
+    </div>
+    {% endfor %}
+</body>
+</html>

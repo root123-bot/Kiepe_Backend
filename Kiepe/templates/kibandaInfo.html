@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="margin-left: 3%"> 
+    <h2>Restaurant Details</h2>
+    <div style="width: 90%;">
+    <div style="display: flex; justify-content: space-between">
+        <div style="display: flex;">
+            <a target="blank" href="{{BASE_URL}}{{profile}}">
+                <img src="{{profile}}" width="120px" height="120px" style="border-radius: 60px" />
+            </a>
+            <div style="margin-left: 10px">
+                <p style="margin-bottom: 0; padding-bottom: 0">Brand name: {{kibanda.brand_name}}</p>
+
+                <p style="margin-top: 7px; padding-top: 0; margin-bottom: 0; padding-bottom: 0">Is active: {{kibanda.is_active}}</p>
+                <p style="margin-top: 7px; padding-top: 0; margin-bottom: 0; padding-bottom: 0">Registered at: {{kibanda.created_at | date:"d/m/Y"}}</p>
+                <p style="margin-top: 7px; padding-top: 0">Cover photo: <a target="blank" href="{{BASE_URL}}{{cover}}">{{BASE_URL}}{{cover}}</a></p>
+                
+            </div>
+        </div>
+        <div>
+            {% if kibanda.is_active %} 
+                <a href={% url 'kibanda_menu' kid=kibanda.id %}>Disable</a>
+            {% else %}
+            <a href={% url 'kibanda_menu' kid=kibanda.id %}>Enable</a>
+            {% endif %}
+        </div>
+    </div>
+    <hr />
+    <div style="display: flex; justify-content: space-around">
+        <div>
+            <h4>Personal Details</h4>
+            <p>Individual Name: {{kibanda.first_name}} {{kibanda.last_name}}</p>
+            <p>{{kibanda.aina_ya_ID}}: {{kibanda.ID_number}}</p>
+            <p>Phone number: {{kibanda.user.phone_number}}</p>
+            <p>Address: {{kibanda.physical_address|slice:"0:45"}}...</p>
+        </div>
+        <div>
+            <h4>Other Info</h4>
+            <p>Payment Status: {{kibanda.status}}</p>
+            <p>Is Opened: {{kibanda.kibandastatus.opened}}</p>
+            <p>Average Rating: {{kibanda.average_ratings | floatformat:"1"}}</p>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>
