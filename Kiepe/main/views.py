@@ -14,6 +14,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.views import View
 import datetime
+from Kiepe.utils.index import sendOTP
+
 
 # Create your views here.
 class UserDetalsAPIView(APIView):
@@ -170,8 +172,13 @@ class CreateOrder(APIView):
                 order = order
             )
 
+
+
             notification2.save()
                 
+            message = f"Kuna order mpya imeingia, namba ya mteja ni {user.phone_number}, kwa maelezo zaidi ingia Kihepe app"
+
+            sendOTP(kibanda.user.phone_number, message)
 
             serializer = OrderSerializer(order)
             return Response(serializer.data, status=status.HTTP_200_OK)
