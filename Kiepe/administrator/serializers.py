@@ -10,6 +10,7 @@ class MenuSerializer(ModelSerializer):
             'get_image',
             'singular_name',
             'type',
+            'get_popularity_score'
         ]
 
 

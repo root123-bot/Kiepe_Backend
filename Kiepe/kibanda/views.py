@@ -10,7 +10,7 @@ from Kiepe.administrator.models import *
 import datetime as dt
 import base64
 from geopy.geocoders import Nominatim
-
+from rest_framework.generics import ListAPIView
 
 def reverse_geocoding(coordinates):
     while True:
@@ -413,6 +413,37 @@ class AvailableOpenedKibandaProfiles(APIView):
             return Response({"message": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
         
 opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
+
+def inifinite_filter(request):
+    limit = request.GET.get('limit')
+    offset = request.GET.get('offset')
+    print(limit, offset)
+    return KibandaProfile.objects.all()[int(offset): int(offset) + int(limit)]
+
+def is_there_more_data(request):
+    offset = request.GET.get('offset')
+    if int(offset) > KibandaProfile.objects.all().count():
+        return False
+    return True
+
+class AllVibanda(ListAPIView):
+    serializer_class = KibandaProfileSerializer
+
+    def get_queryset(self):
+        qs = inifinite_filter(self.request)
+
+        return qs
+    
+    def list(self, request, *args, **kwargs):
+        queryset  = self.get_queryset()
+        
+        serializer = self.serializer_class(queryset, many=True)
+        return Response({
+            "data": serializer.data,
+            "has_more": is_there_more_data(request),
+        })
+
+all_restaurants = AllVibanda.as_view()
 
 class AllVibandaAPIView(APIView):
     def get(self, request):

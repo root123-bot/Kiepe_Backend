@@ -14,6 +14,8 @@ from django.contrib.auth import get_user_model
     hii sjamaanisha ni full dish like "chipsi yai" hapana hii ni individual "menuIte" na 
     ndo ambayo inatumika kwa Kibanda ku-create "MenuItem" 
 '''
+
+
 class Menu(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -21,7 +23,11 @@ class Menu(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     singular_name = models.CharField(max_length=255, blank=True, null=True)
-    type=models.CharField(max_length=255, default="menu")
+    type = models.CharField(max_length=255, default="menu")
+
+
+    def __str__(self):
+        return self.name
 
     @property
     def get_image(self):
@@ -29,10 +35,20 @@ class Menu(models.Model):
             return self.image.url
         return None
 
+    @property
+    def get_popularity_score(self):
+        # then lets count the number of times this menu appears in the menuitems, if it appears more then it's popular than the rest
+        return self.menuitem_set.count() + self.orderitem_set.count()
+
+
 class AdminProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
-    profile = models.ImageField(upload_to='admin_profile_images/', blank=True, null=True)
+    profile = models.ImageField(
+        upload_to='admin_profile_images/', blank=True, null=True)
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
-    
+
+    def __str__(self):
+        return self.name

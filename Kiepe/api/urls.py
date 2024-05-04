@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    url(r'all_restaurants', all_restaurants, name='all_restaurants'),
     url(r'delete_user/$', delete_user, name='delete_user'),
     url(r'isuserexist/$', is_user_exist, name='isuserexist'),
     url(r'processpayment/$', process_payment, name='processpayment'),
