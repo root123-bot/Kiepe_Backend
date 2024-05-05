@@ -427,8 +427,10 @@ def inifinite_filter(request):
         dict_item = dict(item)
         list_dict.append(dict_item)
     
-    print("LIST DICT ", list_dict[:5])
-
+    list_dict = list_dict[:5]
+  
+    sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+    print("SORTED DATA ", sorted_data)
 
     # lets sort the data by average_rating
     # return KibandaProfile.objects.all().order_by('-kibandaratings')
