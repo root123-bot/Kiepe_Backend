@@ -418,6 +418,20 @@ def inifinite_filter(request):
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
     print(limit, offset)
+    qs = KibandaProfile.objects.all()
+    data = KibandaProfileSerializer(qs, many=True)
+    data = list(data.data)
+    # print(data.sort(key=lambda x:s4 x['average_ratings'], reverse=True))
+    list_dict = []
+    for item in data:
+        dict_item = dict(item)
+        list_dict.append(dict_item)
+    
+    print("LIST DICT ", list_dict[:5])
+
+
+    # lets sort the data by average_rating
+    # return KibandaProfile.objects.all().order_by('-kibandaratings')
     return KibandaProfile.objects.all()[int(offset): int(offset) + int(limit)]
 
 def is_there_more_data(request):
