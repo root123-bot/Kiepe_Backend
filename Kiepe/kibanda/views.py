@@ -422,15 +422,15 @@ def inifinite_filter(request):
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
     # print(data.sort(key=lambda x:s4 x['average_ratings'], reverse=True))
-    list_dict = []
+    list_dict = [] 
     for item in data:
         dict_item = dict(item)
         list_dict.append(dict_item)
     
-    list_dict = list_dict[:5]
+    # list_dict = list_dict[:5]
   
     sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
-    print("SORTED DATA ", sorted_data)
+    print("SORTED DATA ", len(sorted_data))
 
     # lets sort the data by average_rating
     # return KibandaProfile.objects.all().order_by('-kibandaratings')
