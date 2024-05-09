@@ -417,7 +417,6 @@ opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
 def inifinite_filter(request):
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
-    print(limit, offset)
     qs = KibandaProfile.objects.all()
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
@@ -428,13 +427,14 @@ def inifinite_filter(request):
         list_dict.append(dict_item)
     
     # list_dict = list_dict[:5]
-  
+    
     sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
-    print("SORTED DATA ", len(sorted_data))
-
+    # ofset means starting data index(the data of starting index is included), limit means the last index but this is not included on the list
+    data = sorted_data[int(offset):int(limit)]
     # lets sort the data by average_rating
     # return KibandaProfile.objects.all().order_by('-kibandaratings')
-    return KibandaProfile.objects.all()[int(offset): int(offset) + int(limit)]
+    # return KibandaProfile.objects.all()[int(offset): int(offset) + int(limit)]
+    return data
 
 def is_there_more_data(request):
     offset = request.GET.get('offset')
@@ -442,20 +442,12 @@ def is_there_more_data(request):
         return False
     return True
 
-class AllVibanda(ListAPIView):
-    serializer_class = KibandaProfileSerializer
+class AllVibanda(APIView):
 
-    def get_queryset(self):
+    def get(self, request):
         qs = inifinite_filter(self.request)
-
-        return qs
-    
-    def list(self, request, *args, **kwargs):
-        queryset  = self.get_queryset()
-        
-        serializer = self.serializer_class(queryset, many=True)
         return Response({
-            "data": serializer.data,
+            "data": json.dumps(qs, default=str),
             "has_more": is_there_more_data(request),
         })
 
