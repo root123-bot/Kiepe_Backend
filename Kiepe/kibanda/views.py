@@ -417,7 +417,7 @@ opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
 def inifinite_filter(request):
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
-    qs = KibandaProfile.objects.all()
+    qs = KibandaProfile.objects.filter(is_active=True)
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
     # print(data.sort(key=lambda x:s4 x['average_ratings'], reverse=True))
@@ -436,7 +436,7 @@ def is_there_more_data(request):
     # check if there is more data
 
     # print("is more  ", KibandaProfile.objects.all().count())
-    if int(limit) > KibandaProfile.objects.all().count():
+    if int(limit) > KibandaProfile.objects.filter(is_active=True).count():
         return False
     return True
 
