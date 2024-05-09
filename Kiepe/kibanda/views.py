@@ -445,7 +445,8 @@ class AllVibanda(APIView):
     def get(self, request):
         qs = inifinite_filter(self.request)
         return Response({
-            "data": json.dumps(qs, default=str),
+            # "data": json.dumps(qs, default=str),
+            "data": qs,
             "has_more": is_there_more_data(request),
         })
 
