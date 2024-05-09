@@ -438,7 +438,11 @@ def inifinite_filter(request):
 
 def is_there_more_data(request):
     offset = request.GET.get('offset')
-    if int(offset) > KibandaProfile.objects.all().count():
+    limit = request.GET.get('limit')
+    # check if there is more data
+
+    # print("is more  ", KibandaProfile.objects.all().count())
+    if int(limit) > KibandaProfile.objects.all().count():
         return False
     return True
 
