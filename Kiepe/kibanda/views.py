@@ -425,19 +425,13 @@ def inifinite_filter(request):
     for item in data:
         dict_item = dict(item)
         list_dict.append(dict_item)
-    
-    # list_dict = list_dict[:5]
-    
+        
     sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
-    # ofset means starting data index(the data of starting index is included), limit means the last index but this is not included on the list
     data = sorted_data[int(offset):int(limit)]
-    # lets sort the data by average_rating
-    # return KibandaProfile.objects.all().order_by('-kibandaratings')
-    # return KibandaProfile.objects.all()[int(offset): int(offset) + int(limit)]
+    
     return data
 
 def is_there_more_data(request):
-    offset = request.GET.get('offset')
     limit = request.GET.get('limit')
     # check if there is more data
 
