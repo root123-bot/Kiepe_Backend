@@ -441,7 +441,7 @@ def inifinite_filter(request):
         sorted_data = [item for item in sorted_data if item.get('is_kibanda_opened') == True]
         has_more = int(limit) < len(sorted_data)
 
-    elif filter == 'nearby':
+    elif filter == 'nearby' and request.GET.get('coords'):
         customer_coords = request.GET.get('coords')
         # filter from sorted_data only one with coordinates
         sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
