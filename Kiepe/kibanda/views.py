@@ -11,6 +11,7 @@ import datetime as dt
 import base64
 from geopy.geocoders import Nominatim
 from rest_framework.generics import ListAPIView
+from geopy.distance import geodesic as gd
 
 def reverse_geocoding(coordinates):
     while True:
@@ -414,9 +415,11 @@ class AvailableOpenedKibandaProfiles(APIView):
         
 opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
 
+
 def inifinite_filter(request):
     limit = request.GET.get('limit')
     offset = request.GET.get('offset')
+    filter = request.GET.get('filter')
     qs = KibandaProfile.objects.filter(is_active=True)
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
@@ -425,29 +428,53 @@ def inifinite_filter(request):
     for item in data:
         dict_item = dict(item)
         list_dict.append(dict_item)
+    
+    sorted_data = []
+    has_more = True
+    if filter == 'rating':
+        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        has_more = int(limit) < len(sorted_data)
+
+    elif filter == 'opened':
+        # all of them should first be sorted by ratings, this make sure the opened one came on top
+        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        sorted_data = [item for item in sorted_data if item.get('is_kibanda_opened') == True]
+        has_more = int(limit) < len(sorted_data)
+
+    elif filter == 'nearby':
+        customer_coords = request.GET.get('coords')
+        # filter from sorted_data only one with coordinates
+        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        sorted_data = [item for item in sorted_data if item['coordinates'] is not None]
+        has_more = int(limit) < len(sorted_data)
+
+        for item in sorted_data:
+            # calculate distance between customer and kibanda
+            kibanda_coords = item['coordinates']
+            distance = gd(customer_coords, kibanda_coords).km
+            item['distance'] = distance
         
-    sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        # after that lets arrange the sorted data by distance
+        sorted_data = sorted(sorted_data, key=lambda x: x['distance'], reverse=False)
+        
+    else:
+        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        has_more = int(limit) < len(sorted_data)
+
     data = sorted_data[int(offset):int(limit)]
     
-    return data
-
-def is_there_more_data(request):
-    limit = request.GET.get('limit')
-    # check if there is more data
-
-    # print("is more  ", KibandaProfile.objects.all().count())
-    if int(limit) > KibandaProfile.objects.filter(is_active=True).count():
-        return False
-    return True
+    return {"data": data, "has_more": has_more}
 
 class AllVibanda(APIView):
 
     def get(self, request):
-        qs = inifinite_filter(self.request)
+        output = inifinite_filter(self.request)
+        data = output.get('data')
+        has_more = output.get('has_more')
         return Response({
             # "data": json.dumps(qs, default=str),
-            "data": qs,
-            "has_more": is_there_more_data(request),
+            "data": data,
+            "has_more": has_more,
         })
 
 all_restaurants = AllVibanda.as_view()
