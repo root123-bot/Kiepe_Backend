@@ -417,9 +417,17 @@ opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
 
 
 def inifinite_filter(request):
-    limit = request.GET.get('limit')
-    offset = request.GET.get('offset')
+    limit = request.GET.get('limit') # this always remain 10, what change is page
     filter = request.GET.get('filter')
+    page = request.GET.get('page')
+
+    take = limit if limit else 10
+    pageParam = page if page else 1
+    skip = (int(pageParam) - 1) * int(take)
+
+    # let get KibandaProfile which are active using skip and take
+    qs = KibandaProfile.objects.filter(is_active=True)[skip:int(take)]
+
     qs = KibandaProfile.objects.filter(is_active=True)
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
@@ -430,24 +438,25 @@ def inifinite_filter(request):
         list_dict.append(dict_item)
     
     sorted_data = []
-    has_more = True
+    # has_more = True
+    total = 0
     if filter == 'rating':
         sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
-        has_more = int(limit) < len(sorted_data)
-
+        # has_more = int(limit) < len(sorted_data)
+        total = len(sorted_data)
     elif filter == 'opened':
         # all of them should first be sorted by ratings, this make sure the opened one came on top
         sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
         sorted_data = [item for item in sorted_data if item.get('is_kibanda_opened') == True]
-        has_more = int(limit) < len(sorted_data)
-
+        # has_more = int(limit) < len(sorted_data)
+        total = len(sorted_data)
     elif filter == 'nearby' and request.GET.get('coords'):
         customer_coords = request.GET.get('coords')
         # filter from sorted_data only one with coordinates
         sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
         sorted_data = [item for item in sorted_data if item['coordinates'] is not None]
-        has_more = int(limit) < len(sorted_data)
-
+        # has_more = int(limit) < len(sorted_data)
+        total = len(sorted_data)
         for item in sorted_data:
             # calculate distance between customer and kibanda
             kibanda_coords = item['coordinates']
@@ -459,22 +468,27 @@ def inifinite_filter(request):
         
     else:
         sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
-        has_more = int(limit) < len(sorted_data)
+        # has_more = int(limit) < len(sorted_data)
+        total = len(sorted_data)
 
-    data = sorted_data[int(offset):int(limit)]
+    data = sorted_data[int(skip):int(int(skip) + int(take))]
     
-    return {"data": data, "has_more": has_more}
+    return {"data": data, "total": total, "take": limit, "page": pageParam}
 
 class AllVibanda(APIView):
 
     def get(self, request):
         output = inifinite_filter(self.request)
         data = output.get('data')
-        has_more = output.get('has_more')
+        total = output.get('total')
+        take = output.get('take')
+        page = output.get('page')
         return Response({
             # "data": json.dumps(qs, default=str),
             "data": data,
-            "has_more": has_more,
+            "total": total,
+            "take": take,
+            "page": page,
         })
 
 all_restaurants = AllVibanda.as_view()
