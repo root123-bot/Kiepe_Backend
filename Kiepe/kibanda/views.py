@@ -473,7 +473,7 @@ def inifinite_filter(request):
 
     data = sorted_data[int(skip):int(int(skip) + int(take))]
     
-    return {"data": data, "total": total, "take": limit, "page": pageParam}
+    return {"data": data, "total": total, "take": take, "page": pageParam}
 
 class AllVibanda(APIView):
 
