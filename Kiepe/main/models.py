@@ -10,6 +10,20 @@ from django.contrib.auth import get_user_model
     we track Customer profile in ordered_by instead of the "User" since the user can be of both 
     the "Kibanda" or "Customer".. assigned_to ndo lazima iwe "KibandaProfile"
 '''
+
+ADS_CATEGORIES = (
+    ("RATING", "RATING"), # this is big ad that will be showing to tap somewhere to rate sth with image check in screenshots of your phone, this does not need to redirect user to any screen
+    ("ARTICLE", "ARTICLE"), # this is article that for now will show image and title and shorted description and then user can tap to read more, the user can like the article and comment on it
+    ("ARTICLE VOTING", "ARTICLE VOTING"), # This is article with title and simple few lines of description and the image in this article the user can vote for something, i called it article since it will have post when user click go to another screen
+)
+
+ADS_HOME_TAB = (
+    ("All", "All"), # this will show ads in "all" tab of home screen in restaurant list
+    ("Nearby", "Nearby"), # this will show ads in "nearby" tab of home screen in restaurant list
+    ("Opened", "Opened"), # this will show ads in "popular" tab of home screen in restaurant list
+    ("Rating", "Rating"), # this will show ads in "rating" tab of home screen in restaurant list
+)
+
 class Order(models.Model):
     order_id = models.CharField(max_length=255, blank=True, null=True)
     order_status = models.CharField(max_length=255) # pending, accepted, rejected, cancelled, completed
@@ -215,3 +229,71 @@ class TransactionRecords(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=255, default="NOT PAID") # this can be pending, success, failed, cancelled, expired, refund
+
+# this can be created when user open the app for the first time and then we can use this to track the user who is not logged in
+class SessionIds(models.Model):
+    session_id = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+# user can vote ad either by using the session_id or by using the user_id
+class AdVotes(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    ad = models.ForeignKey("Ads", on_delete=models.CASCADE)
+    vote = models.BooleanField(default=False)
+    voted_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+
+
+class AdRating(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    ad = models.ForeignKey("Ads", on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    rated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+
+class AdComments(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    ad = models.ForeignKey("Ads", on_delete=models.CASCADE)
+    comment = models.TextField()
+    commented_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+
+class CommentReplies(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.ForeignKey(AdComments, on_delete=models.CASCADE)
+    reply = models.TextField()
+    replied_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+
+class CommentLikes(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.ForeignKey(AdComments, on_delete=models.CASCADE)
+    liked_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+
+# for now lets not focus on reply replies, we can add them later if we need them
+class ReplyLikes(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
+    reply = models.ForeignKey(CommentReplies, on_delete=models.CASCADE)
+    liked_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app    
+
+class Ads(models.Model):
+    category = models.CharField(max_length=255, choices=ADS_CATEGORIES)
+    image = models.ImageField(upload_to="ads_images/", blank=True, null=True)
+    screen = models.CharField(max_length=255, choices=ADS_HOME_TAB)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    start_date = models.DateTimeField(blank=True, null=True) # add can live for a week or month
+    end_date = models.DateTimeField(blank=True, null=True)
+    ad_title = models.CharField(max_length=255, blank=True, null=True)
+    ad_description = models.TextField(blank=True, null=True)
+    is_deleted = models.BooleanField(default=False) # some ads like a tap to rate can't be shown again after user rate it
