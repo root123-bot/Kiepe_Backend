@@ -11,6 +11,8 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('kibanda/<int:kid>/', kibanda_by_id, name='kibanda'),
+    path('kibanda/today-available-menu/<int:kid>/', today_available_menu, name='today_menu'),
     url(r'all_restaurants', all_restaurants, name='all_restaurants'),
     url(r'delete_user/$', delete_user, name='delete_user'),
     url(r'isuserexist/$', is_user_exist, name='isuserexist'),

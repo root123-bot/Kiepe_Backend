@@ -243,7 +243,7 @@ class AdVotes(models.Model):
     vote = models.BooleanField(default=False)
     voted_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
 
 
 class AdRating(models.Model):
@@ -252,7 +252,7 @@ class AdRating(models.Model):
     rating = models.IntegerField()
     rated_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
 
 class AdComments(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
@@ -260,7 +260,7 @@ class AdComments(models.Model):
     comment = models.TextField()
     commented_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
 
 class CommentReplies(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
@@ -268,14 +268,14 @@ class CommentReplies(models.Model):
     reply = models.TextField()
     replied_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
 
 class CommentLikes(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, blank=True, null=True)
     comment = models.ForeignKey(AdComments, on_delete=models.CASCADE)
     liked_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app
 
 # for now lets not focus on reply replies, we can add them later if we need them
 class ReplyLikes(models.Model):
@@ -283,7 +283,7 @@ class ReplyLikes(models.Model):
     reply = models.ForeignKey(CommentReplies, on_delete=models.CASCADE)
     liked_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    session_id = models.ForeignKey(SessionIds, blank=True, null=True) # we'll generate this session_id here on the server instead on the client side like on zeromoja app    
+    session_id = models.ForeignKey(SessionIds, blank=True, null=True, on_delete=models.SET_NULL) # we'll generate this session_id here on the server instead on the client side like on zeromoja app    
 
 class Ads(models.Model):
     category = models.CharField(max_length=255, choices=ADS_CATEGORIES)

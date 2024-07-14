@@ -663,3 +663,59 @@ class EditKibandaProfile(APIView):
             return Response({"details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 edit_kibanda_profile = EditKibandaProfile.as_view()
+
+class KibandaById(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            kibanda_id = self.kwargs.get("kid")
+            
+            kibanda = KibandaProfile.objects.get(id=int(kibanda_id))
+            serialize = KibandaProfileSerializer(kibanda)
+            return Response(serialize.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"message": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+        
+kibanda_by_id = KibandaById.as_view()
+
+class TodayAvailableMenu(APIView):
+    # get available menu for kibanda
+    def get(self, request, *args, **kwargs):
+        try:
+            kibanda_id = self.kwargs.get("kid")
+            kibanda = KibandaProfile.objects.get(id=int(kibanda_id))
+            availableMenu = AvailableMenu.objects.filter(kibanda=kibanda)
+            if availableMenu.exists():
+                availableMenu = availableMenu.first()
+                # check if available menu is of today
+                if availableMenu.updated_at.date() == dt.date.today():
+                    serialize = TodayAvailableMenuSerializer(availableMenu)
+                    return Response(serialize.data, status=status.HTTP_200_OK)
+
+                # if available menu is not of today then we clear it and add all the menu items from default menu
+                availableMenu.menu.clear()
+                kibanda_default_menu = kibanda.defaultmenu
+                for item in kibanda_default_menu.menu.all():
+                    availableMenu.menu.add(item)
+                availableMenu.save()
+                serialize = TodayAvailableMenuSerializer(availableMenu)
+                return Response(serialize.data, status=status.HTTP_200_OK)
+
+        
+            else:
+                kibanda_default_menu = kibanda.defaultmenu
+                availableMenu = AvailableMenu.objects.create(
+                    kibanda=kibanda,
+                    set_from_default_menu=True
+                )
+                for item in kibanda_default_menu.menu.all():
+                    availableMenu.menu.add(item)
+                availableMenu.save()
+                serialize = TodayAvailableMenuSerializer(availableMenu)
+                return Response(serialize.data, status=status.HTTP_200_OK)
+            
+        except Exception as e:
+            print(e)
+            return Response({"message": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
+
+today_available_menu = TodayAvailableMenu.as_view()
