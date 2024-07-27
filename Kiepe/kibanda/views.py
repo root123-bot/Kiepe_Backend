@@ -416,7 +416,7 @@ class AvailableOpenedKibandaProfiles(APIView):
 opened_vibanda = AvailableOpenedKibandaProfiles.as_view()
 
 
-def inifinite_filter(request):
+def restaurants_inifinite_filter(request):
     limit = request.GET.get('limit') # this always remain 10, what change is page
     filter = request.GET.get('filter')
     page = request.GET.get('page')
@@ -426,7 +426,7 @@ def inifinite_filter(request):
     skip = (int(pageParam) - 1) * int(take)
 
     # let get KibandaProfile which are active using skip and take
-    qs = KibandaProfile.objects.filter(is_active=True)[skip:int(take)]
+    # qs = KibandaProfile.objects.filter(is_active=True)[skip:int(take)]
 
     qs = KibandaProfile.objects.filter(is_active=True)
     data = KibandaProfileSerializer(qs, many=True)
@@ -478,7 +478,7 @@ def inifinite_filter(request):
 class AllVibanda(APIView):
 
     def get(self, request):
-        output = inifinite_filter(self.request)
+        output = restaurants_inifinite_filter(self.request)
         data = output.get('data')
         total = output.get('total')
         take = output.get('take')
@@ -719,3 +719,42 @@ class TodayAvailableMenu(APIView):
             return Response({"message": "An error occurred"}, status=status.HTTP_400_BAD_REQUEST)
 
 today_available_menu = TodayAvailableMenu.as_view()
+
+class MapRestaurantPoints(APIView):
+    def get(self, request):
+        limit = request.GET.get('limit')
+        page = request.GET.get('page')
+        coords = request.GET.get('coords')
+
+        take = limit if limit else 20
+        pageParam = page if page else 1
+        # skip = (int(pageParam -1) * int(take))
+
+        qs = KibandaProfile.objects.filter(is_active=True)
+
+        data = KibandaProfileSerializer(qs, many=True)
+        data = list(data.data)
+
+        list_dict = []
+        for item in data:
+            dict_item = dict(item)
+            list_dict.append(dict_item)
+
+        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        # then here it about returning these restaurants in chunks
+        sorted_data = [item for item in sorted_data if item['coordinates'] is not None]
+        total = len(sorted_data)
+
+        for item in sorted_data:
+            # calculate distance between customer and kibanda
+            kibanda_coords = item['coordinates']
+            distance = gd(coords, kibanda_coords).km
+            item['distance'] = distance
+        
+        sorted_data = sorted(sorted_data, key=lambda x: x['distance'], reverse=False)
+
+        metadata = sorted_data[0:int(take)]
+
+        return  Response({"data": metadata, "total": total, "take": take, "page": pageParam})
+
+map_restaurant_points = MapRestaurantPoints.as_view()
