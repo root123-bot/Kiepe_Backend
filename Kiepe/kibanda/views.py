@@ -726,13 +726,13 @@ class MapRestaurantPoints(APIView):
         page = request.GET.get('page')
         coords = request.GET.get('coords')
 
-        take = limit if limit else 20
+        take = limit if limit else 10
         pageParam = page if page else 1
         # skip = (int(pageParam -1) * int(take))
 
         qs = KibandaProfile.objects.filter(is_active=True)
 
-        data = KibandaProfileSerializer(qs, many=True)
+        data = KibandaMapSerializer(qs, many=True)
         data = list(data.data)
 
         list_dict = []
@@ -740,9 +740,9 @@ class MapRestaurantPoints(APIView):
             dict_item = dict(item)
             list_dict.append(dict_item)
 
-        sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+        # sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
         # then here it about returning these restaurants in chunks
-        sorted_data = [item for item in sorted_data if item['coordinates'] is not None]
+        sorted_data = [item for item in list_dict if item['coordinates'] is not None]
         total = len(sorted_data)
 
         for item in sorted_data:

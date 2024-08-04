@@ -49,3 +49,11 @@ class TodayAvailableMenuSerializer(ModelSerializer):
             'get_menu',
             'set_from_default_menu'
         ]
+
+class KibandaMapSerializer(ModelSerializer):
+    class Meta: 
+        model = KibandaProfile
+        fields = [
+            'id',
+            'coordinates'
+        ]
