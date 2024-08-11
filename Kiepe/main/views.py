@@ -923,5 +923,6 @@ class GetSearchSuggestions(APIView):
             "suggestions": suggestions
         })
 
+suggestions = GetSearchSuggestions.as_view()
 
 
