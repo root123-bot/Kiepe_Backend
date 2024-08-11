@@ -15,7 +15,9 @@ from django.http import HttpResponseRedirect
 from django.views import View
 import datetime
 from Kiepe.utils.index import sendOTP
-
+from django.db.models import Q
+from Kiepe.administrator.serializers import *
+import numpy as np
 
 # Create your views here.
 class UserDetalsAPIView(APIView):
@@ -888,3 +890,38 @@ class ReverseUserStatus(View):
         return HttpResponseRedirect(reverse("validateVibanda"))
 
 reverse_user_status = ReverseUserStatus.as_view()
+
+class GetSearchSuggestions(APIView):
+    def get(self, request):
+        query = request.GET.get('query') # the query can be restaurant food or place
+        
+        # save searched query
+        
+        # retrieve suggestions, 
+        # we only care about eithe rrestaurants or food
+        qs = KibandaProfile.objects.filter(
+            Q(brand_name__icontains=query)
+        ).values('id', 'brand_name')[:10]
+
+        vibanda = KibandaProfileSerializer(qs, many=True)
+
+        vibanda = list(vibanda.data)
+
+        qs2 = Menu.objects.filter(
+            Q(name_icontains=query)
+        ).values('id', 'name')[:5]
+
+        menus = MenuSerializer(qs2, many=True)
+
+        menus = list(menus)
+
+        suggestions = np.concatenate(vibanda, menus)
+
+        random.shuffle(suggestions)
+
+        return Response({
+            "suggestions": suggestions
+        })
+
+
+

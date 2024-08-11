@@ -297,3 +297,9 @@ class Ads(models.Model):
     ad_title = models.CharField(max_length=255, blank=True, null=True)
     ad_description = models.TextField(blank=True, null=True)
     is_deleted = models.BooleanField(default=False) # some ads like a tap to rate can't be shown again after user rate it
+
+
+class SearchQuery(models.Model):
+    text = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
