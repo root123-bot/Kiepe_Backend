@@ -14,4 +14,11 @@ class MenuSerializer(ModelSerializer):
         ]
 
 
-
+class MenuSearchSuggestionSerializer(ModelSerializer):
+    class Meta:
+        model = Menu
+        fields = [
+            'id',
+            'name',
+            'category'
+        ]

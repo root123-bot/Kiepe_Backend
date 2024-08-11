@@ -31,6 +31,15 @@ class KibandaProfileSerializer(ModelSerializer):
             # 'profile_base64',
         ]
 
+class KibandaSearchSuggestionSerializer(ModelSerializer):
+    class Meta:
+        model = KibandaProfile
+        fields = [
+            'id',
+            'name',
+            'category'
+        ]
+
 class KibandaDefaultMenuSerializer(ModelSerializer):
     class Meta:
         model = DefaultMenu

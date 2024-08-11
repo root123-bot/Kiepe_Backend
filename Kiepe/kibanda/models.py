@@ -30,6 +30,13 @@ class KibandaProfile(models.Model):
     # so we'll use the PaymentRecords to check if kibanda Free tier expire or not..
     # free_startdate = models.DateTimeField(blank=True, null=True)  # we don't care about these two fields we're checking for PaymentRecords
     # free_enddate = models.DateTimeField(blank=True, null=True)  # we don't care about these two fields we're checking for PaymentRecords
+    @property
+    def name(self):
+        return self.brand_name
+    
+    @property
+    def category(self):
+        return "Restaurant"
 
     @property
     def get_image(self):

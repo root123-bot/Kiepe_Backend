@@ -17,7 +17,6 @@ import datetime
 from Kiepe.utils.index import sendOTP
 from django.db.models import Q
 from Kiepe.administrator.serializers import *
-import numpy as np
 
 # Create your views here.
 class UserDetalsAPIView(APIView):
@@ -893,36 +892,38 @@ reverse_user_status = ReverseUserStatus.as_view()
 
 class GetSearchSuggestions(APIView):
     def get(self, request):
-        query = request.GET.get('query') # the query can be restaurant food or place
-        
+        query = self.request.GET.get('query') # the query can be restaurant food or place
+        print("QUERY ", query)
         # save searched query
         
         # retrieve suggestions, 
         # we only care about eithe rrestaurants or food
         qs = KibandaProfile.objects.filter(
             Q(brand_name__icontains=query)
-        ).values('id', 'brand_name')[:10]
+        )[:10]
 
-        vibanda = KibandaProfileSerializer(qs, many=True)
+        vibanda = KibandaSearchSuggestionSerializer(qs, many=True)
 
         vibanda = list(vibanda.data)
 
         qs2 = Menu.objects.filter(
-            Q(name_icontains=query)
-        ).values('id', 'name')[:5]
+            Q(name__icontains=query)
+        )[:5]
 
-        menus = MenuSerializer(qs2, many=True)
 
-        menus = list(menus)
+        menus = MenuSearchSuggestionSerializer(qs2, many=True)
 
-        suggestions = np.concatenate(vibanda, menus)
+        menus = list(menus.data)
 
+        vibanda.extend(menus)
+
+        suggestions = vibanda
         random.shuffle(suggestions)
 
         return Response({
             "suggestions": suggestions
         })
 
-suggestions = GetSearchSuggestions.as_view()
+search_suggestions = GetSearchSuggestions.as_view()
 
 

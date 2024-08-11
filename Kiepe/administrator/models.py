@@ -40,6 +40,9 @@ class Menu(models.Model):
         # then lets count the number of times this menu appears in the menuitems, if it appears more then it's popular than the rest
         return self.menuitem_set.count() + self.orderitem_set.count()
 
+    @property
+    def category(self):
+        return "Food"
 
 class AdminProfile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
