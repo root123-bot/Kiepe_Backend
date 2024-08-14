@@ -893,7 +893,6 @@ reverse_user_status = ReverseUserStatus.as_view()
 class GetSearchSuggestions(APIView):
     def get(self, request):
         query = self.request.GET.get('query') # the query can be restaurant food or place
-        print("QUERY ", query)
         # save searched query
         
         # retrieve suggestions, 
