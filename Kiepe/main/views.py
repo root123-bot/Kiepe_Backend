@@ -904,9 +904,9 @@ class GetSearchSuggestions(APIView):
         vibanda = KibandaSearchSuggestionSerializer(qs, many=True)
 
         vibanda = list(vibanda.data)
-
-        qs2 = Menu.objects.filter(
-            Q(name__icontains=query)
+        misosi = Menu.objects.filter(type="menu")
+        qs2 = misosi.filter(
+            Q(name__icontains=query) 
         )[:5]
 
 
