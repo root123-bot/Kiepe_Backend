@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('searched-menu-restaurants', searched_menu_restaurants, name="searchedmenurestaurants"),
     path('search-suggestions', search_suggestions, name="search-suggestions"),
     path('map_restaurants', map_restaurant_points, name='map_marker'),
     path('kibanda/<int:kid>/', kibanda_by_id, name='kibanda'),

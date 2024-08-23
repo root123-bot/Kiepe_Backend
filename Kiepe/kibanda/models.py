@@ -117,7 +117,7 @@ class KibandaStatus(models.Model):
 # 
 class MenuItem(models.Model):
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
-    kibanda = models.ForeignKey(KibandaProfile, on_delete=models.CASCADE)
+    kibanda = models.ForeignKey(KibandaProfile, on_delete=models.CASCADE, related_name="menuitems")
     price = models.CharField(max_length=255, null=True, blank=True)  # we don't expect to have "price" for the "ingredietns" like tomato, pilipili, kachumbari
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

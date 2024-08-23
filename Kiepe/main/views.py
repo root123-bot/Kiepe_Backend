@@ -925,4 +925,54 @@ class GetSearchSuggestions(APIView):
 
 search_suggestions = GetSearchSuggestions.as_view()
 
+def menu_restaurant_infinite_filter(request):
+    limit = request.GET.get('limit') # this always remain 10, what change is page
+    page = request.GET.get('page')
+    id = request.GET.get('menuId')
 
+    take = limit if limit else 10
+    pageParam = page if page else 1
+    skip = (int(pageParam) - 1) * int(take)
+
+    msosi = Menu.objects.get(id=id)
+
+    qs = KibandaProfile.objects.filter(
+        menuitems__menu = msosi,
+        is_active = True
+    )
+
+    data = KibandaProfileSerializer(qs, many=True)
+
+    data = list(data.data)
+
+    list_dict = [] 
+
+    for item in data:
+        dict_item = dict(item)
+        list_dict.append(dict_item)
+    
+    sorted_data = sorted(list_dict, key=lambda x: (x['average_ratings'] if x['average_ratings'] is not None else float('-inf')), reverse=True)
+
+    total = len(sorted_data)
+
+    data = sorted_data[int(skip):int(int(skip) + int(take))]
+
+    return {"data": data, "total": total, "take": take, "page": pageParam}
+
+
+class GetSearchedFoodRestaurants(APIView):
+    def get(self, request):
+        output = menu_restaurant_infinite_filter(self.request)
+
+        data = output.get('data')
+        total = output.get('total')
+        take = output.get('take')
+        page = output.get('page')
+        return Response({
+            "data": data,
+            "total": total,
+            "take": take,
+            "page": page,
+        })
+
+searched_menu_restaurants = GetSearchedFoodRestaurants.as_view()
