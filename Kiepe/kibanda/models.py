@@ -148,6 +148,9 @@ class MenuItem(models.Model):
     def get_menu_name(self):
         return self.menu.name
     
+    @property
+    def get_menu_type(self):
+        return self.menu.type
 
 # menu ya leo ya kibanda fulani, vyakula vilivyopo kwa siku hiyo, hii ni onetoone coz inabid kila kibanda iwe na menu yake
 # ya siku huska haman ku-create menu nyingje just update the menu for that day... hii itabidi awe anaijaza na anai-update kila

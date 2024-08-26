@@ -75,7 +75,8 @@ class MenuItemSerializer(ModelSerializer):
             'id',
             'price',
             'get_menu_id',
-            'get_menu_name'
+            'get_menu_name',
+            'get_menu_type'
         ]
 
 # this menus actually is "MenuItems" and can be fetched from KibandaProfile "menus" property
