@@ -941,7 +941,7 @@ def menu_restaurant_infinite_filter(request):
         is_active = True
     )
 
-    data = KibandaProfileSerializer(qs, many=True)
+    data = SearchedMenuRestaurantSerializer(qs, many=True)
 
     data = list(data.data)
 

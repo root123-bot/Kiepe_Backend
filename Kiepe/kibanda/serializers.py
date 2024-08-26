@@ -67,12 +67,23 @@ class KibandaMapSerializer(ModelSerializer):
             'coordinates'
         ]
 
+
+class MenuItemSerializer(ModelSerializer):
+    class Meta:
+        model = MenuItem
+        fields = [
+            'id',
+            'price',
+            'get_menu_id',
+            'get_menu_name'
+        ]
+
 class SearchedMenuRestaurantSerializer(ModelSerializer):
-    menus = TodayAvailableMenuSerializer(many=True)
+    menus = MenuItemSerializer(many=True)
 
     class Meta:
         model = KibandaProfile
-        fields = fields = [
+        fields = [
             'id',
             'get_image',
             'get_cover_photo',
