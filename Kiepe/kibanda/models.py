@@ -97,6 +97,11 @@ class KibandaProfile(models.Model):
                 total_ratings = total_ratings + rating.rating if rating.rating else total_ratings
             return total_ratings / ratings.count()
         return None
+    
+    @property
+    def menus(self):
+        today_menus = self.menuyaleo.menu.all()
+        return today_menus
 
 # hii itatupa taaarifa kama kwa siku hiyo kibanda kimefungwa or not.. kibanda kimoja kina status moja tu, hamna ku-create status nyingi 
 # kiutimamu unachotakiwa kufanya ni ku-update tu status ya kibanda kama kimefungwa or kimefunguliwa... kiutimamu unavyo-create 

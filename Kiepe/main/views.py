@@ -937,7 +937,7 @@ def menu_restaurant_infinite_filter(request):
     msosi = Menu.objects.get(id=id)
 
     qs = KibandaProfile.objects.filter(
-        menuitems__menu = msosi,
+        menuyaleo__menu__menu = msosi,
         is_active = True
     )
 
