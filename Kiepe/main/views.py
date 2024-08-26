@@ -936,6 +936,12 @@ def menu_restaurant_infinite_filter(request):
 
     msosi = Menu.objects.get(id=id)
 
+    # shortly the "menu" of menuyaleo is "MenuItem" which then linked to actual "menu" thats why
+    # we have "__menu__menu", as because the user search for given menu on restaurant its crital
+    # to consider only if that menus is currently available on the restaurant that's why i took 
+    # the "menuyaleo", after fetched the one which have the menuyaleo with that searched food from 
+    # it i serializer them and remember in serializing them we're supplied with all available menuitem
+    # of that restaurant
     qs = KibandaProfile.objects.filter(
         menuyaleo__menu__menu = msosi,
         is_active = True

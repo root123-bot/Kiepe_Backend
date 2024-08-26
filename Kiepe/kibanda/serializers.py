@@ -78,6 +78,8 @@ class MenuItemSerializer(ModelSerializer):
             'get_menu_name'
         ]
 
+# this menus actually is "MenuItems" and can be fetched from KibandaProfile "menus" property
+# so we need this in order to get price of given menu item of kibanda 
 class SearchedMenuRestaurantSerializer(ModelSerializer):
     menus = MenuItemSerializer(many=True)
 

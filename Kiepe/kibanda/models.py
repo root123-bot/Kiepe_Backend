@@ -98,6 +98,10 @@ class KibandaProfile(models.Model):
             return total_ratings / ratings.count()
         return None
     
+    # hii ni property inayo-return menu zilizopo leo za hicho kibanda, as you see
+    # they return the MenuItem of menuyaleo, the "Menu" of "menuyaleo" is the "MenuItem"
+    # we need this to get a list of available menuitems which gives us other informations
+    # like "price"
     @property
     def menus(self):
         today_menus = self.menuyaleo.menu.all()
@@ -143,6 +147,7 @@ class MenuItem(models.Model):
     @property
     def get_menu_name(self):
         return self.menu.name
+    
 
 # menu ya leo ya kibanda fulani, vyakula vilivyopo kwa siku hiyo, hii ni onetoone coz inabid kila kibanda iwe na menu yake
 # ya siku huska haman ku-create menu nyingje just update the menu for that day... hii itabidi awe anaijaza na anai-update kila
