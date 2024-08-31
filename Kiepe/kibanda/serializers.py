@@ -90,6 +90,7 @@ class SearchedMenuRestaurantSerializer(ModelSerializer):
             'id',
             'get_image',
             'get_cover_photo',
+            'phone_number',
             'coordinates',
             'get_user_id',
             'is_kibanda_profile_active',
