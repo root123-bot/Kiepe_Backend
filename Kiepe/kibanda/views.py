@@ -429,6 +429,7 @@ def restaurants_inifinite_filter(request):
     # qs = KibandaProfile.objects.filter(is_active=True)[skip:int(take)]
 
     qs = KibandaProfile.objects.filter(is_active=True)
+
     data = KibandaProfileSerializer(qs, many=True)
     data = list(data.data)
     # print(data.sort(key=lambda x:s4 x['average_ratings'], reverse=True))
@@ -560,15 +561,11 @@ class KibandaAvailableMenuOriginalAPIView(APIView):
                 availableMenu = availableMenu.first()
 
                 if availableMenu.updated_at.date() == dt.date.today():
-                    print('I HAVE PURE AVAILABLE MENU OF TODAY SO NO NEED TO CLEAR MENU ITEMS')
                     serialize = TodayAvailableMenuSerializer(availableMenu)
                     return Response(serialize.data, status=status.HTTP_200_OK)
 
                 # if available menu is not of today then we should clear it
                 # HII NDO API INAYO-CLEAR DUH I DON'T KNOW WHY IT CLEAR ALL OF EM
-                print("THIS IS AVAILABLE MENU DATE ", availableMenu.updated_at.date())
-                print('THIS IS AVAILABLE MENU ', availableMenu.menu)
-                print('available menu IS NOT OF TODAY SO WE SHOULD CLEAR IT')
                 availableMenu.menu.clear()
                 # then we should send this empty array to the user..
                 serialize = TodayAvailableMenuSerializer(availableMenu)

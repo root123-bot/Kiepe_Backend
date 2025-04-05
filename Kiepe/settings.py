@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-p6x&b-31uu&y2cg+$=k(e(w1#0s8@y9-a7=m758j*67uy@iio+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*", "143.244.165.235"]
 
 
 # Application definition
@@ -176,6 +176,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10MB this is maximum size of data someone can upload... https://zoejoyuliao.medium.com/the-problem-you-may-face-when-you-upload-a-big-file-to-a-nginx-django-application-413-request-4ae9b50874a5
 
 AUTH_USER_MODEL = 'register.CustomUser'
 

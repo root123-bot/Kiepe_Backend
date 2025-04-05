@@ -1,0 +1,63 @@
+from django.urls import path
+from django.conf.urls import url
+from Kiepe.main.views import *
+from Kiepe.register.views import *
+from Kiepe.kibanda.views import *
+from Kiepe.administrator.views import *
+from Kiepe.api.views import *
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    path('map-restaurants-points', map_restaurant_points, name='map_marker'),
+    path('kibanda/<int:kid>/', kibanda_by_id, name='kibanda'),
+    path('kibanda/today-available-menu/<int:kid>/', today_available_menu, name='today_menu'),
+    url(r'all_restaurants', all_restaurants, name='all_restaurants'),
+    url(r'delete_user/$', delete_user, name='delete_user'),
+    url(r'isuserexist/$', is_user_exist, name='isuserexist'),
+    url(r'processpayment/$', process_payment, name='processpayment'),
+    url(r'paymentcallbackhandler/$', payment_callback_handler, name='paymentcallbackhandler'),
+    url(r'updateuserprofilepicture/$', update_user_profile_picture, name="updateuserprofilepicture"),
+    url(r'marknotificationasread/$', mark_notification_as_read, name="marknotiread"),
+    url(r'kibandaratings/$', kibanda_ratings, name="kibandaratings"),
+    url(r'kibandareviews/$', kibanda_reviews, name="kibandareviews"),
+    url(r'addkibandarating/$', add_kibanda_rating, name="addkibandarating"),
+    url(r'changepassword/$', change_password, name="changepassword"),
+    url(r'editkibandaprofile/$', edit_kibanda_profile, name="editkibandaprofile"),
+    url(r'markorderaccepted/$', mark_order_accepted, name="markorderaccepted"),
+    url(r'markordercompleted/$', mark_order_completed, name='markordercompleted'),
+    url(r'clearallnotificationofuser/$', clear_all_notification_of_user, name='clearallnotificationbyuser'),
+    url(r'marknotificationdeleted/$', mark_notification_deleted, name='marknotificationdeleted'),
+    url(r'fetchnotificationofuser/$', fetch_notification_of_user, name='fetchnotificationofuser'),
+    url(r'kibandamarkorderdeleted/$', kibanda_mark_order_deleted, name='kibanda_mark_order_deleted'),
+    url(r'markorderrejected/$', mark_order_rejected, name='markorderrejected'),
+    url(r'kibandaorders/$', kibanda_orders, name='kibandaorders'),
+    url(r'markasdeleted/$', mark_as_deleted, name="markasdeleted"),
+    url(r'customercancelorder/$', customer_cancel_order, name="customercancelorder"),
+    url(r'customerorders/$', customer_orders, name="custumerorders"),
+    url(r'createorder/$', create_order, name='create_order'),
+    url(r'editkibandadefaultmenu/$', edit_kibanda_default_menu, name="edit_kibanda_default_menu"),
+    url(r'addorremovemenufromtodayavailablemenu/$', add_or_remove_menu_from_today_available_menu, name='add_or_remove_menu_from_today_available_menu'),
+    url(r'purekibandaavailablemenunoautoadddefaultmenu/$', pure_kibanda_available_menu_no_auto_add_default_menu, name="purekibandaavailablemenu"),
+    url(r'kibandatodayavailablemenu/$', kibanda_today_available_menu, name='kibanda_today_available_menu'),
+    url(r'openedvibanda/$', opened_vibanda, name='opened_vibanda'),
+    url(r'registeredvibanda/$', all_vibanda, name='available_kibandas'),
+    url(r'savedevicenotificationtoken/$', save_device_notification_token, name='save_device_notification_token'),
+    url(r'settodayavailablemenu/$', set_today_available_menu, name='set_today_available_menu'),
+    url(r'setdefaultmenuasavailablemenu/$', set_default_menu_as_available_menu, name='set_default_menu_as_available_menu'),
+    url(r'ismenuavailableset/$', is_menu_available_set, name='is_menu_available_set'),
+    url(r'updatekibandastatus/$', update_kibanda_status, name='update_kibanda_status'),
+    url(r'getdefaultkibandamenu/$', get_default_kibanda_menu, name='get_default_kibanda_menu'),
+    url(r'createdefaultmenuitem/$', create_default_menu_item, name='create_default_menu_item'),
+    url(r'menuaddedbyadministrator/$', menu_added_by_administrator, name='menu_added_by_administrator'),
+    url(r'completekibandaprofile/$', complete_kibanda_profile, name='complete_kibanda_profile'),
+    url(r'login/$', login, name='login'),
+    url(r'register/$', register_user, name='register_user'),
+    url(r'userdetails/$', user_details, name='user_details'),
+    url(r'sendotp/$', send_otp, name="sendotp"),
+    url(r'validateotp/$', validate_otp, name='validateotp'),
+    url(r'token/$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'token/refresh/$', TokenRefreshView.as_view(), name='token_refresh'),
+]

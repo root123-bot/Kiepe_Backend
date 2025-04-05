@@ -14,7 +14,7 @@ from requests.exceptions import ConnectionError, HTTPError
 def sendOTP(phone_no="+255623317196" , sms="Your OTP is 1234"):
 
     BASE_URL = "q984r.api.infobip.com"
-    API_KEY = "App 59681f69a81b5802b3f7b8383ef65b1d-1d681fa7-8e5a-496a-83c7-b0ce6e678819"
+    API_KEY = "App a3480056f1de0e51d92140f8f6fe1e09-84c08e58-5e12-403e-b349-2e46ffd1d29e"
 
     # SENDER = "Jipime"
     SENDER = "ConnectMoja"
@@ -60,11 +60,11 @@ def sendNotification(title, body, token):
     message = {
         'to' :  token,
         'title' : title,
-        'sound': "default",
+        'sound' : "default",
         'body' : body
     }
     return requests.post('https://exp.host/--/api/v2/push/send', json = message)
-    
+
 
 # The Expo push notification service
 def send_push_message(token, message, extra=None):
