@@ -14,11 +14,21 @@ from Kiepe.main.models import *
 from Kiepe.customer.serializers import *
 from Kiepe.kibanda.serializers import *
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
 def generateOTP():
     OTP = []
     for i in range(4):
         OTP.append(str(random.randint(0, 9)))
     return "".join(OTP)
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+    'refresh': str(refresh),
+    'access': str(refresh.access_token),
+    }
 
 class IsUserExist(APIView):
     def post(self ,request):
@@ -45,28 +55,33 @@ class LoginAPIView(APIView):
             phone = request.data.get("phone")
             password = request.data.get("password")
 
-
             User = get_user_model()
 
             user = authenticate(request, username=phone, password=password)
+
             if user is not None:
+                # generate accessToken for that user.
+                token = get_tokens_for_user(user)
+                access_token = token['access']
                 # then we have the user..
                 # i should get the category of that user to save to return his profile serializer...
+
                 if hasattr(user, "customer"):
                     customer = user.customer
                     serialize = CustomerProfileSerializer(customer)
-
+                    
                     return Response({
                         "message": "Login successful",
-                        "data": serialize.data
+                        "data": { **serialize.data, 'accessToken': access_token }
                     }, status=status.HTTP_200_OK)
 
                 elif hasattr(user, "kibanda"):
                     kibanda = user.kibanda
                     serialize = KibandaProfileSerializer(kibanda)
+
                     return Response({
                         "message": "Login successful",
-                        "data": serialize.data
+                        "data": { **serialize.data, 'accessToken': access_token }
                     }, status=status.HTTP_200_OK)
             
                 else:
@@ -77,7 +92,7 @@ class LoginAPIView(APIView):
             else:
                 return Response({
                     "message": "Invalid credentials"
-                }, status=status.HTTP_200_OK)
+                }, status=status.HTTP_401_UNAUTHORIZED)
         
         except Exception as e:
             print(e)
