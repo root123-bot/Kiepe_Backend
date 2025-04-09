@@ -982,3 +982,12 @@ class GetSearchedFoodRestaurants(APIView):
         })
 
 searched_menu_restaurants = GetSearchedFoodRestaurants.as_view()
+
+
+class GetSystemSettings(APIView):
+    def get(self, request):
+        return Response({
+            "engineer_contact": "+255623317196",
+        }, status=status.HTTP_200_OK)
+
+get_settings = GetSystemSettings.as_view()
