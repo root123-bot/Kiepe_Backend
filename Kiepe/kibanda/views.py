@@ -430,14 +430,10 @@ def restaurants_inifinite_filter(request):
 
     qs = KibandaProfile.objects.filter(is_active=True)
 
-    data = KibandaProfileSerializer(qs, many=True)
-    data = list(data.data)
-    # print(data.sort(key=lambda x:s4 x['average_ratings'], reverse=True))
-    list_dict = [] 
-    for item in data:
-        dict_item = dict(item)
-        list_dict.append(dict_item)
-    
+    serializer = KibandaProfileSerializer(qs, many=True)
+   
+    list_dict = serializer.data 
+
     sorted_data = []
     # has_more = True
     total = 0

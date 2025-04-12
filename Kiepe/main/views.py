@@ -17,6 +17,8 @@ import datetime
 from Kiepe.utils.index import sendOTP
 from django.db.models import Q
 from Kiepe.administrator.serializers import *
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class UserDetalsAPIView(APIView):
@@ -991,3 +993,44 @@ class GetSystemSettings(APIView):
         }, status=status.HTTP_200_OK)
 
 get_settings = GetSystemSettings.as_view()
+
+class MyCustomerOrdersView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user = request.user
+
+        limit = request.GET.get('limit')
+        filter = request.GET.get('filter')
+        page = request.GET.get('page')
+
+        take = limit if limit else 10
+        pageParam = page if page else 1
+        skip = (int(pageParam) - 1) * int(take)
+
+        qs = Order.objects.filter(ordered_by__id = user.id, mark_as_deleted = False)
+
+        serializer = OrderSerializer(reversed(qs), many=True)
+
+        list_dict = serialize.data
+        
+        sorted_data = []
+
+        total = 0
+
+        if filter == 'accepted':
+            pass
+
+        if filter == 'pending':
+            pass
+
+        if filter == 'cancelled':
+            pass
+
+        if filter == 'completed':
+            pass
+
+        if filter == 'rejected':
+            pass
+
