@@ -15,6 +15,8 @@ from Kiepe.customer.serializers import *
 from Kiepe.kibanda.serializers import *
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 def generateOTP():
     OTP = []
@@ -294,6 +296,38 @@ class RegisterUserAPIView(APIView):
 register_user = RegisterUserAPIView.as_view()
 
 
+class GetUserAPIVIew(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
 
+    def get(self, request):
+        user = request.user
+        print("USER ", user)
 
+        token = get_tokens_for_user(user)
+        access_token = token['access']
 
+        if (user.is_superuser):
+            return Response({
+                "id": user.id,
+                "email": user.email,
+                "phone": user.phone_number,
+                "is_superuser": user.is_superuser,
+                "accessToken": access_token,
+            }, status=status.HTTP_200_OK)
+            
+        elif hasattr(user, 'customer'):
+            customer = user.customer
+            serialize = CustomerProfileSerializer(customer)
+            
+            return Response({ **serialize.data, 'accessToken': access_token }, status=status.HTTP_200_OK)
+
+        elif hasattr(user, 'kibanda'):
+            kibanda = user.kibanda
+            serialize = KibandaProfileSerializer(kibanda)
+
+            return Response({**serialize.data, 'accessToken': access_token }, status=status.HTTP_200_OK)
+        else:
+            pass
+
+get_user = GetUserAPIVIew.as_view()
