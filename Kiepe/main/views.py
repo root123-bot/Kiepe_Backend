@@ -1039,6 +1039,8 @@ class MyRestaurantOrdersView(APIView):
     def get(self, request):
         user = request.user
 
+        kibanda = user.kibanda
+
         limit = request.GET.get('limit')
         status = request.GET.get('status')
         page = request.GET.get('page')
