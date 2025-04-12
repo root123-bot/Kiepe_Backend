@@ -1002,7 +1002,7 @@ class MyCustomerOrdersView(APIView):
         user = request.user
 
         limit = request.GET.get('limit')
-        filter = request.GET.get('filter')
+        status = request.GET.get('status')
         page = request.GET.get('page')
 
         take = limit if limit else 10
@@ -1013,12 +1013,12 @@ class MyCustomerOrdersView(APIView):
 
         valid_statuses = ['accepted', 'pending', 'cancelled', 'completed', 'rejected']
 
-        if filter and filter in valid_statuses:
-            qs = qs.filter(order_status=filter)
+        if status and status in valid_statuses:
+            qs = qs.filter(order_status=status)
 
         total_orders = qs.count()
 
-        orders = sorted_data[int(skip):int(int(skip) + int(take))]
+        orders = qs[int(skip):int(int(skip) + int(take))]
 
         serializer = OrderSerializer(reversed(orders), many=True)
 
@@ -1040,7 +1040,7 @@ class MyRestaurantOrdersView(APIView):
         user = request.user
 
         limit = request.GET.get('limit')
-        filter = request.GET.get('filter')
+        status = request.GET.get('status')
         page = request.GET.get('page')
 
         take = limit if limit else 10
@@ -1051,12 +1051,12 @@ class MyRestaurantOrdersView(APIView):
 
         valid_statuses = ['accepted', 'pending', 'cancelled', 'completed', 'rejected']
 
-        if filter and filter in valid_statuses:
-            qs = qs.filter(order_status=filter)
+        if status and status in valid_statuses:
+            qs = qs.filter(order_status=status)
 
         total_orders = qs.count()
 
-        orders = sorted_data[int(skip):int(int(skip) + int(take))]
+        orders = qs[int(skip):int(int(skip) + int(take))]
 
         serializer = OrderSerializer(reversed(orders), many=True)
 
