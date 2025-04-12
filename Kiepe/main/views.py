@@ -1011,26 +1011,60 @@ class MyCustomerOrdersView(APIView):
 
         qs = Order.objects.filter(ordered_by__id = user.id, mark_as_deleted = False)
 
-        serializer = OrderSerializer(reversed(qs), many=True)
+        valid_statuses = ['accepted', 'pending', 'cancelled', 'completed', 'rejected']
 
-        list_dict = serialize.data
-        
-        sorted_data = []
+        if filter and filter in valid_statuses:
+            qs = qs.filter(order_status=filter)
 
-        total = 0
+        total_orders = qs.count()
 
-        if filter == 'accepted':
-            pass
+        orders = sorted_data[int(skip):int(int(skip) + int(take))]
 
-        if filter == 'pending':
-            pass
+        serializer = OrderSerializer(reversed(orders), many=True)
 
-        if filter == 'cancelled':
-            pass
+        return Response({
+            'orders': serializer.data,
+            'total': total_orders,
+            'page': page,
+            'take': take
+        })
 
-        if filter == 'completed':
-            pass
+customer_my_orders = MyCustomerOrdersView.as_view()
 
-        if filter == 'rejected':
-            pass
 
+class MyRestaurantOrdersView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user = request.user
+
+        limit = request.GET.get('limit')
+        filter = request.GET.get('filter')
+        page = request.GET.get('page')
+
+        take = limit if limit else 10
+        pageParam = page if page else 1
+        skip = (int(pageParam) - 1) * int(take)
+
+        qs = Order.objects.filter(assigned_to__id = kibanda.id, kibanda_mark_order_deleted = False)
+
+        valid_statuses = ['accepted', 'pending', 'cancelled', 'completed', 'rejected']
+
+        if filter and filter in valid_statuses:
+            qs = qs.filter(order_status=filter)
+
+        total_orders = qs.count()
+
+        orders = sorted_data[int(skip):int(int(skip) + int(take))]
+
+        serializer = OrderSerializer(reversed(orders), many=True)
+
+        return Response({
+            'orders': serializer.data,
+            'total': total_orders,
+            'page': page,
+            'take': take
+        })
+
+restaurant_my_orders = MyRestaurantOrdersView.as_view()
