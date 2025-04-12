@@ -331,3 +331,44 @@ class GetUserAPIVIew(APIView):
             pass
 
 get_user = GetUserAPIVIew.as_view()
+
+class SetUserLoginPIN(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def post(self, request):
+        pin = request.data.get('pin')
+
+        user = request.user
+
+        user.password = pin
+
+        user.save()
+
+        token = get_tokens_for_user(user)
+        access_token = token['access']
+        
+        if (user.is_superuser):
+            return Response({
+                "id": user.id,
+                "email": user.email,
+                "phone": user.phone_number,
+                "is_superuser": user.is_superuser,
+                "accessToken": access_token,
+            }, status=status.HTTP_200_OK)
+            
+        elif hasattr(user, 'customer'):
+            customer = user.customer
+            serialize = CustomerProfileSerializer(customer)
+            
+            return Response({ **serialize.data, 'accessToken': access_token }, status=status.HTTP_200_OK)
+
+        elif hasattr(user, 'kibanda'):
+            kibanda = user.kibanda
+            serialize = KibandaProfileSerializer(kibanda)
+
+            return Response({**serialize.data, 'accessToken': access_token }, status=status.HTTP_200_OK)
+        else:
+            pass
+
+set_user_pin = SetUserLoginPIN.as_view()

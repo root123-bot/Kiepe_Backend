@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'login/$', login, name='login'),
     url(r'register/$', register_user, name='register_user'),
     url(r'userdetails/$', user_details, name='user_details'),
+    url(r'user/set-pin/$', set_user_pin, name='set-user-pin'),
     url(r'user/me/$', get_user, name="get_user"),
     url(r'sendotp/$', send_otp, name="sendotp"),
     url(r'validateotp/$', validate_otp, name='validateotp'),
