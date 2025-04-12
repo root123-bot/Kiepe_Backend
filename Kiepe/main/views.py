@@ -408,6 +408,38 @@ class FetchNotificationOfUser(APIView):
 
 fetch_notification_of_user = FetchNotificationOfUser.as_view()
 
+class MyNotifications(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def get(self, request):
+        user = request.user
+
+        limit = request.GET.get('limit')
+        status = request.GET.get('status')
+        page = request.GET.get('page')
+
+        take = limit if limit else 10
+        pageParam = page if page else 1
+        skip = (int(pageParam) - 1) * int(take)
+
+        qs = Notification.objects.filter(sent_to=user, is_deleted=False)
+
+        total_notifications = qs.count()
+
+        notifications = qs[int(skip):int(int(skip) + int(take))]
+
+        serializer = NotificationSerializer(notifications, many=True)
+
+        return Response({
+            'notifications': serializer.data,
+            'total': total_notifications,
+            'page': page,
+            'take': take
+        })
+
+user_notifications = MyNotifications.as_view()
+
 class MarkNotificationDeleted(APIView):
     def post(self, request):
         notification_id = request.data.get("notification_id")

@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    url(r'user/my-notifications', user_notifications, name="user_notifications"),
     url(r'restaurant/my-orders/$', restaurant_my_orders, name="restaurant_my_orders"),
     url(r'customer/my-orders/$', customer_my_orders, name="customer_my_orders"),
     path('settings', get_settings, name="get_system_settings"),
