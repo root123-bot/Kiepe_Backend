@@ -9,37 +9,21 @@ from exponent_server_sdk import (
 import os
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+import africastalking
+
+username = "Paschal"
+api_key = "atsk_7f62f931ac8d1d2985683207ba26cec63bfe02ad9ee235d7ed7dc52e780e513b5b05b5af"
+sender = "BUFEE"
 
 
-def sendOTP(phone_no="+255623317196" , sms="Your OTP is 1234"):
+def sendOTP(phone_no, message):
+    africastalking.initialize(username, api_key)
 
-    BASE_URL = "q984r.api.infobip.com"
-    API_KEY = "App a3480056f1de0e51d92140f8f6fe1e09-84c08e58-5e12-403e-b349-2e46ffd1d29e"
+    sms = africastalking.SMS
 
-    # SENDER = "Jipime"
-    SENDER = "ConnectMoja"
-    # SENDER = "AfyaTap"
-    RECIPIENT = phone_no
-    MESSAGE_TEXT = sms
+    response = sms.send(message, [phone_no], sender)
 
-    conn = http.client.HTTPSConnection(BASE_URL)
-
-    payload1 = "{\"messages\":" \
-            "[{\"from\":\"" + SENDER + "\"" \
-            ",\"destinations\":" \
-            "[{\"to\":\"" + RECIPIENT + "\"}]," \
-            "\"text\":\"" + MESSAGE_TEXT + "\"}]}"
-
-    headers = {
-        'Authorization': API_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
-    conn.request("POST", "/sms/2/text/advanced", payload1, headers)
-
-    res = conn.getresponse()
-    data = res.read()
-    print(data.decode("utf-8"))
+    return response    
 
 
 # Optionally providing an access token within a session if you have enabled push security

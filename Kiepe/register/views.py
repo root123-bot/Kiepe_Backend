@@ -34,12 +34,18 @@ class IsUserExist(APIView):
     def post(self ,request):
         phone = request.data.get("phone")
         User = get_user_model()
-        user = User.objects.filter(phone_number=phone)
-        if user.count() > 0:
+        users = User.objects.filter(phone_number=phone)
+        if users.count() > 0:
+            user = users.last()
+
+            token = get_tokens_for_user(user)
+            access_token = token['access']
+
             return Response({
                 "message": "User exist",
-                "user_id": user.last().id,
-                "user_group": "customer" if hasattr(user.last(), "customer") else "kibanda",
+                "user_id": user.id,
+                "accessToken": access_token,
+                "user_group": "customer" if hasattr(user, "customer") else "kibanda",
             }, status=status.HTTP_200_OK)
         else:
             return Response({
@@ -47,6 +53,16 @@ class IsUserExist(APIView):
             }, status=status.HTTP_200_OK)
         
 is_user_exist = IsUserExist.as_view()
+
+class CheckUserExistByPhone(APIView):
+    def get(self, request):
+        phone = self.request.GET.get('phone')
+        User = get_user_model()
+        users = User.objects.filter(phone_number=phone)
+
+        if users.count() > 0:
+            user = user.last()
+            
 
 
 class LoginAPIView(APIView):
@@ -108,6 +124,7 @@ class ValidateOTPAPIView(APIView):
         try:
             phone = request.data.get('phone_number')
             OTP = request.data.get('otp')
+            print('OTP ', OTP, phone)
             userOTP = UserOTP.objects.filter(phone=phone, otp=OTP)
             if userOTP.count() > 0:
                 userOTP = userOTP.first()
@@ -154,7 +171,7 @@ class GenerateOTPAPIView(APIView):
             
             # send this message to the user phone number
             message = f"Nambari ya kuthibitisha, {OTP}"
-            sendOTP(phone, message)
+            # sendOTP(phone, message)
             print('this is otp... ', OTP)
 
             return Response({
@@ -205,8 +222,13 @@ class RegisterUserAPIView(APIView):
                     )
                     device.save()
 
+                token = get_tokens_for_user(user)
+                access_token = token['access']
+
                 serialize = CustomerProfileSerializer(customer)
-                return Response(serialize.data , status=status.HTTP_200_OK)
+                data = { **serialize.data, 'accessToken': access_token }
+
+                return Response(data , status=status.HTTP_200_OK)
 
 
 
@@ -248,8 +270,13 @@ class RegisterUserAPIView(APIView):
                 
                 payment.save()
 
+                token = get_tokens_for_user(user)
+                access_token = token['access']
+
                 serialize = KibandaProfileSerializer(kibanda)
-                return Response(serialize.data, status=status.HTTP_200_OK)
+                data = { **serialize.data, 'accessToken': access_token }
+
+                return Response(data, status=status.HTTP_200_OK)
             
             else:
                 return Response({
