@@ -173,7 +173,7 @@ class GenerateOTPAPIView(APIView):
             
             # send this message to the user phone number
             message = f"Nambari ya kuthibitisha, {OTP}"
-            # sendOTP(phone, message)
+            sendOTP(phone, message)
             print('this is otp... ', OTP)
 
             return Response({
@@ -302,7 +302,6 @@ class GetUserAPIVIew(APIView):
 
     def get(self, request):
         user = request.user
-        print("USER ", user)
 
         token = get_tokens_for_user(user)
         access_token = token['access']
@@ -347,7 +346,7 @@ class SetUserLoginPIN(APIView):
 
         token = get_tokens_for_user(user)
         access_token = token['access']
-        
+
         if (user.is_superuser):
             return Response({
                 "id": user.id,
