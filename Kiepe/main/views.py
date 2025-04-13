@@ -25,7 +25,7 @@ class UserDetalsAPIView(APIView):
     def post(self, request, *args, **kwargs):
         
         user_id = request.data.get('user_id')
-        print('this is user id ', user_id)
+
         try:
             user = get_user_model().objects.get(id=int(user_id))
             if hasattr(user, 'kibanda'):

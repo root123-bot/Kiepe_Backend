@@ -202,9 +202,9 @@ class RegisterUserAPIView(APIView):
                 # kumbuka hapa tume-omit 'email' but we said its required_fields in our Auth Model let's see if this will work..
                 user = get_user_model().objects.create_user(
                     phone_number=phone,
-                    password = pin,
                     email="notset@gmail.com"
                 )
+                user.set_password(pin)
                 user.save()
                 customer = CustomerProfile.objects.create(
                     user=user
@@ -238,9 +238,9 @@ class RegisterUserAPIView(APIView):
                 # kumbuka hapa tume-omit 'email' but we said its required_fields in our Auth Model let's see if this will work..
                 user = get_user_model().objects.create_user(
                     phone_number=phone,
-                    password = pin,
                     email="notset@gmail.com"
                 )
+                user.set_password(pin)
                 user.save()
                 kibanda = KibandaProfile.objects.create(
                     user=user,
@@ -340,7 +340,7 @@ class SetUserLoginPIN(APIView):
 
         user = request.user
 
-        user.password = pin
+        user.set_password(pin)
 
         user.save()
 
