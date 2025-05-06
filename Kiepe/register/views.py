@@ -302,7 +302,6 @@ class GetUserAPIVIew(APIView):
 
     def get(self, request):
         user = request.user
-
         token = get_tokens_for_user(user)
         access_token = token['access']
 

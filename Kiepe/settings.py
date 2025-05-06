@@ -172,8 +172,8 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    # 'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    # 'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10MB this is maximum size of data someone can upload... https://zoejoyuliao.medium.com/the-problem-you-may-face-when-you-upload-a-big-file-to-a-nginx-django-application-413-request-4ae9b50874a5
