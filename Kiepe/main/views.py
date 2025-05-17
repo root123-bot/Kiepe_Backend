@@ -19,6 +19,8 @@ from django.db.models import Q
 from Kiepe.administrator.serializers import *
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class UserDetalsAPIView(APIView):
@@ -193,12 +195,14 @@ class CreateOrder(APIView):
 create_order = CreateOrder.as_view()
 
 class CustomerCancelOrderAPIView(APIView):
-    def post(self, request):
-        user_id = request.data.get("user_id")
-        order_id = request.data.get("order_id")
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        order_id = kwargs.get('order_id')
 
         try:
-            user = get_user_model().objects.get(id=user_id)
             order = Order.objects.get(id=int(order_id))
 
             order.order_status = "cancelled"
@@ -214,7 +218,7 @@ class CustomerCancelOrderAPIView(APIView):
             msg_receiver = ordered_to.user
             token = DeviceNotificationToken.objects.filter(user = msg_receiver)
             if token.exists():
-                token  = token.first().deviceNotificationToken
+                token = token.first().deviceNotificationToken
                 sendNotification("Order cancelled", "Customer have cancelled the order made", token)
             else:
                 print("no token for kibanda")
