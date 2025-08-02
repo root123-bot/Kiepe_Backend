@@ -1050,7 +1050,12 @@ class MyCustomerOrdersView(APIView):
         valid_statuses = ['accepted', 'pending', 'cancelled', 'completed', 'rejected']
 
         if status and status in valid_statuses:
-            qs = qs.filter(order_status=status)
+            if status == "cancelled":
+                cancelled_order_ids = CancelledOrdersByCustomer.objects.filter(cancelled_by__id = user.id, order__mark_as_deleted = False).values_list('id', flat=True)
+
+                qs = Order.objects.filter(id__in=cancelled_order_ids)
+            else:
+                qs = qs.filter(order_status=status)
 
         total_orders = qs.count()
 
