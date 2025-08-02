@@ -1111,3 +1111,25 @@ class MyRestaurantOrdersView(APIView):
         })
 
 restaurant_my_orders = MyRestaurantOrdersView.as_view()
+
+
+class CustomerMarkOrderDeleteAPIView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user
+        order_id = kwargs.get('order_id')
+
+        try:
+            order = Order.objects.get(id=int(order_id))
+            order.mark_as_deleted = True
+
+            order.save()
+            return Response({ "details": "Order deleted successfully "}, status=status.HTTP_200_OK)
+        except Exception as err:
+            print('error ', str(err))
+            return Response({"details": str(err)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+customer_mark_order_deleted = CustomerMarkOrderDeleteAPIView.as_view()

@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'kibandaorders/$', kibanda_orders, name='kibandaorders'),
     url(r'markasdeleted/$', mark_as_deleted, name="markasdeleted"),
     path('orders/customers/<int:order_id>/', customer_cancel_order, name="customercancelorder"),
+    path('orders/customers/mark-deleted/<int:order_id>/', customer_mark_order_deleted, name="customerdeleteorder"),
     url(r'customerorders/$', customer_orders, name="custumerorders"),
     url(r'createorder/$', create_order, name='create_order'),
     url(r'editkibandadefaultmenu/$', edit_kibanda_default_menu, name="edit_kibanda_default_menu"),
