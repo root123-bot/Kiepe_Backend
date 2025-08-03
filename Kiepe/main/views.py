@@ -1051,7 +1051,7 @@ class MyCustomerOrdersView(APIView):
 
         if status and status in valid_statuses:
             if status == "cancelled":
-                cancelled_order_ids = CancelledOrdersByCustomer.objects.filter(cancelled_by__id = user.id, order__mark_as_deleted = False).values_list('id', flat=True)
+                cancelled_order_ids = CancelledOrdersByCustomer.objects.filter(cancelled_by__id = user.id, order__mark_as_deleted = False).values_list('order__id', flat=True)
                 qs = Order.objects.filter(id__in=cancelled_order_ids, order_status = "cancelled", mark_as_deleted = False)
             else:
                 qs = qs.filter(order_status=status)
