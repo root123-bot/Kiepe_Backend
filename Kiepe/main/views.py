@@ -698,6 +698,20 @@ class FetchKibandaReview(APIView):
 
 kibanda_reviews = FetchKibandaReview.as_view()
 
+class MyReviewsKibanda(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        kibanda = user.kibanda
+        kibandaRatings = KibandaRating.objects.filter(kibanda=kibanda, rating_comment__isnull=False, rating__isnull=False)
+        serializer = KibandaRatingSerializer(kibandaRatings, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+my_reviews_kibanda = MyReviewsKibanda.as_view()
+
 
 class KibandaRatings(APIView):
     def post(self, request, *args, **kwargs):

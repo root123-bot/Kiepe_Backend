@@ -56,16 +56,25 @@ class IsUserExist(APIView):
         
 is_user_exist = IsUserExist.as_view()
 
-class CheckUserExistByPhone(APIView):
-    def get(self, request):
-        phone = self.request.GET.get('phone')
-        User = get_user_model()
-        users = User.objects.filter(phone_number=phone)
+class GetUserDataUsingPhone(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
 
-        if users.count() > 0:
-            user = user.last()
+    def get(self, request, *args, **kwargs):
+        try:
+            phone = kwargs.get('phone')
+            user = User.objects.get(phone_number = phone)
+
+            return Response({
+                "user_id": user.id,
+                "user_group": "customer" if hasattr(user, "customer") else "kibanda",
+            }, status=status.HTTP_200_OK)
+
+        except Exception as err:
+            print('error ', str(err))
+            return Response({"details": str(err)}, status=status.HTTP_400_BAD_REQUEST)
             
-
+get_use_data_using_phone = GetUserDataUsingPhone.as_view()
 
 class LoginAPIView(APIView):
     def post(self, request):
