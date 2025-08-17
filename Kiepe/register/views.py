@@ -65,6 +65,11 @@ class GetUserDataUsingPhone(APIView):
             phone = kwargs.get('phone')
             user = User.objects.get(phone_number = phone)
 
+            # If user is inactive then return not found
+            if not user.is_active:
+                print("user is inactive")
+                return Response({"details": str(err)}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response({
                 "user_id": user.id,
                 "user_group": "customer" if hasattr(user, "customer") else "kibanda",
