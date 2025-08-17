@@ -640,11 +640,13 @@ class ChangePasswordAPIView(APIView):
         
 change_password = ChangePasswordAPIView.as_view()
 
-
+# Even guest user can rate
 class AddKibandaRating(APIView):
+    authentication_classes = [JWTAuthentication] # even guest user can rate, the role of this is to parse token to `request.user`
+
     def post(self, request, *args, **kwargs):
         try:
-            user_id = request.data.get('user_id', None)
+            user = request.user
             kibanda_id = request.data.get('kibanda_id')
             rating = request.data.get('rating', None)
             comment = request.data.get('comment', None)
@@ -654,7 +656,7 @@ class AddKibandaRating(APIView):
             # both of them can't be none at the same time but can have value both at the same time
             # remember customer can be anyone either kibanda or customer
             kibandaRating = KibandaRating.objects.create(
-                rated_by = get_user_model().objects.get(id=int(user_id)) if user_id else None,
+                rated_by = user if user else None,
                 rating = rating if rating else None,
                 rating_comment = comment if comment else None,
                 kibanda = KibandaProfile.objects.get(id=int(kibanda_id)),
