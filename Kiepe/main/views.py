@@ -714,6 +714,28 @@ class MyReviewsKibanda(APIView):
 
 my_reviews_kibanda = MyReviewsKibanda.as_view()
 
+class GetKibandaReviews(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            id = kwargs.get("id")
+
+            kibanda = KibandaProfile.objects.get(id=id)
+
+            kibandaRatings = KibandaRating.objects.filter(kibanda=kibanda, rating_comment__isnull=False, rating__isnull=False)
+            serializer = KibandaRatingSerializer(kibandaRatings, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Exception as err:
+            print("Error ", err)
+            return Response(
+                {"details": str(err)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+get_kibanda_reviews = GetKibandaReviews.as_view()
 
 class KibandaRatings(APIView):
     def post(self, request, *args, **kwargs):
