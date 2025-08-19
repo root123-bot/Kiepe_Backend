@@ -647,7 +647,7 @@ class AddKibandaRating(APIView):
     def post(self, request, *args, **kwargs):
         try:
             user = request.user
-            kibanda_id = request.data.get('kibanda_id')
+            kibanda_id = kwargs.get('kibanda_id')
             rating = request.data.get('rating', None)
             comment = request.data.get('comment', None)
             print(" this is data sent ", user_id, kibanda_id, rating, comment)
