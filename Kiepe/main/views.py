@@ -716,7 +716,6 @@ my_reviews_kibanda = MyReviewsKibanda.as_view()
 
 class GetKibandaReviews(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         try:
