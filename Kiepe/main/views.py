@@ -650,13 +650,9 @@ class AddKibandaRating(APIView):
             kibanda_id = kwargs.get('kibanda_id')
             rating = request.data.get('rating', None)
             comment = request.data.get('comment', None)
-            print(" this is data sent ", user_id, kibanda_id, rating, comment)
-            # here "rating" can be none in case mtu anasubmit bila kutoa rating
-            # here "comment" can be none in case mtu anasubmit bila kutoa comment
-            # both of them can't be none at the same time but can have value both at the same time
-            # remember customer can be anyone either kibanda or customer
+            
             kibandaRating = KibandaRating.objects.create(
-                rated_by = user if user else None,
+                rated_by = user if not user.is_anonymous else None,
                 rating = rating if rating else None,
                 rating_comment = comment if comment else None,
                 kibanda = KibandaProfile.objects.get(id=int(kibanda_id)),
