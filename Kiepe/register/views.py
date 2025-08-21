@@ -62,6 +62,8 @@ class GetUserDataUsingPhone(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
+            User = get_user_model()
+            
             phone = kwargs.get('phone')
             user = User.objects.get(phone_number = phone)
 
