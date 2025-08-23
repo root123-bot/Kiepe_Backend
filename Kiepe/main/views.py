@@ -105,14 +105,19 @@ customer_orders = FetchCustomerOrders.as_view()
 
 class CreateOrder(APIView):
     def post(self, request):
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated] 
+
+        user = request.user
+        items = request.data.get('items')
+        kibanda_id = request.data.get('kibandaId')
+        simu_ya_mteja = request.data.get('customerPhone')
+
+        user_id = user.id
         
-        user_id = request.data.get('user_id')
-        order_metadata = request.data.get('order_metadata')
-        simu_ya_mteja = request.data.get('phone')
-        print('data sent ', user_id, order_metadata, simu_ya_mteja)
         try:
             user = get_user_model().objects.get(id=int(user_id))
-            kibanda = KibandaProfile.objects.get(id=int(order_metadata['kibandaId']))
+            kibanda = KibandaProfile.objects.get(id=int(kibanda_id))
             existingOrderIds = Order.objects.values_list('order_id', flat=True)
             order_ids = list(existingOrderIds)
             orderId = ""
@@ -121,12 +126,10 @@ class CreateOrder(APIView):
                 orderId = "".join(random.choices(string.ascii_uppercase + string.digits, k=25))
                 if orderId not in order_ids:
                     flag = False
-
-
             
             order = Order.objects.create(order_id = orderId, ordered_by=user, assigned_to=kibanda, order_status='pending', total = 0, namba_ya_mteja = simu_ya_mteja)
             order.save()
-            for item in order_metadata['metadata']:
+            for item in items:
                 oitem = OrderItem.objects.create(
                     order=order,
                     menu = Menu.objects.get(id=item['id']),
