@@ -104,10 +104,10 @@ class FetchCustomerOrders(APIView):
 customer_orders = FetchCustomerOrders.as_view()
 
 class CreateOrder(APIView):
-    def post(self, request):
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated] 
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
 
+    def post(self, request):
         user = request.user
         items = request.data.get('items')
         kibanda_id = request.data.get('kibandaId')
