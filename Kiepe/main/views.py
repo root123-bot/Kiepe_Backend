@@ -112,11 +112,9 @@ class CreateOrder(APIView):
         items = request.data.get('items')
         kibanda_id = request.data.get('kibandaId')
         simu_ya_mteja = request.data.get('customerPhone')
-
-        user_id = user.id
-        
+        print(kibanda_id)
+        print(user)
         try:
-            user = get_user_model().objects.get(id=int(user_id))
             kibanda = KibandaProfile.objects.get(id=int(kibanda_id))
             existingOrderIds = Order.objects.values_list('order_id', flat=True)
             order_ids = list(existingOrderIds)
