@@ -57,8 +57,6 @@ class IsUserExist(APIView):
 is_user_exist = IsUserExist.as_view()
 
 class GetUserDataUsingPhone(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated] 
 
     def get(self, request, *args, **kwargs):
         try:
