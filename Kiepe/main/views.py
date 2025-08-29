@@ -19,8 +19,6 @@ from django.db.models import Q
 from Kiepe.administrator.serializers import *
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class UserDetalsAPIView(APIView):

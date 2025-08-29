@@ -12,6 +12,8 @@ import base64
 from geopy.geocoders import Nominatim
 from rest_framework.generics import ListAPIView
 from geopy.distance import geodesic as gd
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 def reverse_geocoding(coordinates):
     while True:
@@ -26,9 +28,11 @@ def reverse_geocoding(coordinates):
 
 # Create your views here.
 class CompleteKibandaProfile(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
     def post(self, request):
         try:
-            user_id = request.data.get("user_id")
             fname = request.data.get("fname")
             lname = request.data.get("lname")
             idtype = request.data.get("idtype")
@@ -41,7 +45,7 @@ class CompleteKibandaProfile(APIView):
 
             print("coordinates ", coords, type(coords))
             
-            user = get_user_model().objects.get(id=int(user_id))
+            user = request.user
             if hasattr(user, "kibanda"):
                 kibanda = user.kibanda
                 
@@ -613,9 +617,11 @@ add_or_remove_menu_from_today_available_menu = AddOrRemoveMenuFromTodayAvailable
 
 
 class EditKibandaProfile(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
     def post(self, request):
         try:
-            user_id = request.data.get("user_id")
             fname = request.data.get("fname")
             lname = request.data.get("lname")
             brand = request.data.get("brand")
@@ -624,7 +630,7 @@ class EditKibandaProfile(APIView):
             coords = request.data.get("coords") 
             physical_address = reverse_geocoding(coords)
             phone = request.data.get("phone")
-            user = get_user_model().objects.get(id=int(user_id))
+            user = request.user
             user.phone_number = phone
             user.save()
             if hasattr(user, "kibanda"):
