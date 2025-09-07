@@ -11,7 +11,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    url(r'all_restaurants_coords', all_restaurants_coords, name='all_restaurants_coords'),
+    url(r'all_restaurants_coords/$', all_restaurants_coords, name='all_restaurants_coords'),
     url(r'user/my-notifications', user_notifications, name="user_notifications"),
     url(r'restaurant/my-orders/$', restaurant_my_orders, name="restaurant_my_orders"),
     url(r'customer/my-orders/$', customer_my_orders, name="customer_my_orders"),
@@ -21,7 +21,7 @@ urlpatterns = [
     path('map_restaurants', map_restaurant_points, name='map_marker'),
     path('kibanda/<int:kid>/', kibanda_by_id, name='kibanda'),
     path('kibanda/today-available-menu/<int:kid>/', today_available_menu, name='today_menu'),
-    url(r'all_restaurants', all_restaurants, name='all_restaurants'),
+    url(r'all_restaurants/$', all_restaurants, name='all_restaurants'),
     url(r'delete_user/$', delete_user, name='delete_user'),
     url(r'isuserexist/$', is_user_exist, name='isuserexist'),
     path('users/<str:phone>/', get_use_data_using_phone, name="get_use_data_using_phone"),
