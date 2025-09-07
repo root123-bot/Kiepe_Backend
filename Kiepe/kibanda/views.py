@@ -506,7 +506,7 @@ class AllRestaurantCoordinates(APIView):
 
         qs = KibandaProfile.objects.filter(is_active=True).values('id', 'coordinates')
         total = qs.count()
-        paginated_qs = sorted_data[int(skip):int(int(skip) + int(take))]
+        paginated_qs = qs[int(skip):int(int(skip) + int(take))]
 
         serializer = CoordinateSerializer(paginated_qs, many=True)
    
