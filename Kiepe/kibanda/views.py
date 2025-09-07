@@ -495,9 +495,6 @@ class AllVibanda(APIView):
 all_restaurants = AllVibanda.as_view()
 
 class AllRestaurantCoordinates(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated] 
-    
     def get(self, request):
         limit = request.GET.get('limit') 
         filter = request.GET.get('filter')
