@@ -494,6 +494,34 @@ class AllVibanda(APIView):
 
 all_restaurants = AllVibanda.as_view()
 
+class AllRestaurantCoordinates(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+    
+    def get(self, request):
+        limit = request.GET.get('limit') 
+        filter = request.GET.get('filter')
+        page = request.GET.get('page')
+
+        take = limit if limit else 10
+        pageParam = page if page else 1
+        skip = (int(pageParam) - 1) * int(take)
+
+        qs = KibandaProfile.objects.filter(is_active=True).values('id', 'coordinates')
+        total = qs.count()
+        paginated_qs = sorted_data[int(skip):int(int(skip) + int(take))]
+
+        serializer = CoordinateSerializer(paginated_qs, many=True)
+   
+        return Response({
+            "data": serializer.data,
+            "total": total,
+            "take": take,
+            "page": page,
+        })
+
+all_restaurants_coords = AllRestaurantCoordinates.as_view()
+
 class AllVibandaAPIView(APIView):
     def get(self, request):
         try:

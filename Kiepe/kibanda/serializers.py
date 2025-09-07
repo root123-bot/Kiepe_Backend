@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import *
 
 class KibandaProfileSerializer(ModelSerializer):
@@ -101,3 +102,7 @@ class SearchedMenuRestaurantSerializer(ModelSerializer):
             'average_ratings',
             'menus'
         ]
+
+class CoordinateSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    coordinates = serializers.CharField() 
