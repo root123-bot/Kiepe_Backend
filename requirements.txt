@@ -19,3 +19,4 @@ sqlparse==0.4.4
 urllib3==2.0.3
 whitenoise==6.5.0
 gunicorn==21.2.0
+africastalking==1.1.0

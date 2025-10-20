@@ -9,7 +9,7 @@ from exponent_server_sdk import (
 import os
 import requests
 from requests.exceptions import ConnectionError, HTTPError
-# import africastalking
+import africastalking
 
 username = "Paschal"
 api_key = "atsk_7f62f931ac8d1d2985683207ba26cec63bfe02ad9ee235d7ed7dc52e780e513b5b05b5af"
@@ -17,14 +17,13 @@ sender = "BUFEE"
 
 
 def sendOTP(phone_no, message):
-    # africastalking.initialize(username, api_key)
+    africastalking.initialize(username, api_key)
 
-    # sms = africastalking.SMS
+    sms = africastalking.SMS
 
-    # response = sms.send(message, [phone_no], sender)
+    response = sms.send(message, [phone_no], sender)
 
-    # return response  
-    pass  
+    return response    
 
 
 # Optionally providing an access token within a session if you have enabled push security
