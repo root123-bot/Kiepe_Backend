@@ -23,7 +23,8 @@ def sendOTP(phone_no, message):
 
     # response = sms.send(message, [phone_no], sender)
 
-    # return response    
+    # return response  
+    pass  
 
 
 # Optionally providing an access token within a session if you have enabled push security
