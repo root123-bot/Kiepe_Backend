@@ -198,7 +198,7 @@ AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "")
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
-AWS_LOCATION = os.environ.get("AWS_LOCATION", "static")
+AWS_LOCATION = os.environ.get("AWS_LOCATION", "")
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
