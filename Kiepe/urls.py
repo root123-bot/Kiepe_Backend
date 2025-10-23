@@ -14,10 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls import include, url
 from django.views.generic import TemplateView
 from Kiepe.main.views import *
 from Kiepe.api import urls as api_urls
@@ -25,8 +24,8 @@ from Kiepe.api import urls as api_urls
 urlpatterns = [
     path('reverseuserstatus/<int:kid>/', reverse_user_status, name='kibanda_menu'),
     path('kibandainfo/<int:kid>/', restaurants_info, name='kibanda_info'),
-    url(r'validateVibanda/$', validate_restaurants, name='validateVibanda'),
-    url(r'^api/', include(api_urls)),
+    re_path(r'validateVibanda/$', validate_restaurants, name='validateVibanda'),
+    re_path(r'^api/', include(api_urls)),
     path('admin/', admin.site.urls),
 ]
 
