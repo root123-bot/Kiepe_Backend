@@ -30,6 +30,6 @@ schema==0.7.8
 six==1.16.0
 sqlparse==0.4.4
 typing_extensions==4.15.0
-urllib3==1.26.20
+urllib3==1.25.11
 docutils==0.14
 
