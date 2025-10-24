@@ -140,9 +140,6 @@ USE_TZ = True
 
 MEDIA_URL = '/media/'
 
-# STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -221,9 +218,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+# https://stackoverflow.com/questions/79127276/django-static-files-not-uploaded-properly-to-digitalocean-spaces-using-s3
 STORAGES = {
     "default": {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
