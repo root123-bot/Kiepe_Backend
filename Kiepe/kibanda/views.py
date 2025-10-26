@@ -203,14 +203,16 @@ edit_kibanda_default_menu = EditDefaultMenuItem.as_view()
             
 
 class CreateDefaultMenuItem(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         try:
-            user_id = request.data.get("user_id")
             menuItemsMetadata = request.data.get("mt")
 
             # parsed_menuItemsMetadata = json.loads(menuItemsMetadata)
             # print('menuitemsmetadaat ', menuItemsMetadata, type(menuItemsMetadata), menuItemsMetadata[0]["id"])
-            user = get_user_model().objects.get(id=int(user_id))
+            user = request.user
             kibanda = user.kibanda
 
             defaultMenu = DefaultMenu.objects.create(
@@ -265,7 +267,6 @@ get_default_kibanda_menu = GetDefaultKibandaMenu.as_view()
 class UpdateKibandaStatus(APIView):
     def post(self, request):
         try:
-            print("SOMEONE CALLED ME TO UPDATE KIBANDA STATUS")
             user_id = request.data.get("user_id")
             new_status = request.data.get("status")
             user = get_user_model().objects.get(id=int(user_id))
@@ -285,7 +286,6 @@ update_kibanda_status = UpdateKibandaStatus.as_view()
 class IsKibandaSetTodayAvailableMenu(APIView):
     def post(self, request):
         try:
-            print('IM GET CALLED....')
             user_id = request.data.get("user_id")
             user = get_user_model().objects.get(id=int(user_id))
             kibanda = user.kibanda
