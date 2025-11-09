@@ -202,7 +202,7 @@ class EditDefaultMenuItem(APIView):
 edit_kibanda_default_menu = EditDefaultMenuItem.as_view()
             
 
-class CreateDefaultMenuItem(APIView):
+class CreateKibandaDefaultMenus(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -245,7 +245,7 @@ class CreateDefaultMenuItem(APIView):
             print(e)
             return Response({"details": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
-create_default_menu_item = CreateDefaultMenuItem.as_view()
+create_kibanda_default_menus = CreateKibandaDefaultMenus.as_view()
 
             
 class GetDefaultKibandaMenu(APIView):
