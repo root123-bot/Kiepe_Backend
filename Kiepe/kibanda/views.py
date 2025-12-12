@@ -797,7 +797,7 @@ class FavoriteRestaurants(APIView):
         qs = KibandaProfile.objects.filter(is_active=True, id__in=restaurant_ids)
 
         total = qs.count()
-        paginated_qs = qs[int(skip):int(int(skip) + int(take))
+        paginated_qs = qs[int(skip):int(int(skip) + int(take))]
         serializer = KibandaProfileSerializer(paginated_qs, many=True)
 
         return Response({
