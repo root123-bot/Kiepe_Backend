@@ -782,3 +782,29 @@ class MapRestaurantPoints(APIView):
         return  Response({"data": metadata, "total": total, "take": take, "page": pageParam})
 
 map_restaurant_points = MapRestaurantPoints.as_view()
+
+
+class FavoriteRestaurants(APIView):
+    def get(self, request):
+        limit = request.GET.get('limit')
+        page = request.GET.get('page')
+        restaurant_ids = request.GET.getlist('restaurant_ids[]')
+
+        take = limit if limit else 10
+        pageParam = page if page else 1
+        skip = (int(pageParam) - 1) * int(take)
+
+        qs = KibandaProfile.objects.filter(is_active=True, id__in=restaurant_ids)
+
+        total = qs.count()
+        paginated_qs = qs[int(skip):int(int(skip) + int(take))
+        serializer = KibandaProfileSerializer(paginated_qs, many=True)
+
+        return Response({
+            "data": serializer.data,
+            "total": total,
+            "take": take,
+            "page": pageParam,
+        })
+
+favorite_restaurants = FavoriteRestaurants.as_view()

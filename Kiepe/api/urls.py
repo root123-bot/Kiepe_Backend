@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    re_path(r'favorite_restaurants/$', favorite_restaurants, name='favorite_restaurants'),
     re_path(r'all_restaurants_coords/$', all_restaurants_coords, name='all_restaurants_coords'),
     re_path(r'user/my-notifications', user_notifications, name="user_notifications"),
     re_path(r'restaurant/my-orders/$', restaurant_my_orders, name="restaurant_my_orders"),
