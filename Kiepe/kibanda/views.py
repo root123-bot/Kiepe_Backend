@@ -711,7 +711,7 @@ class TodayAvailableMenu(APIView):
             availableMenu = AvailableMenu.objects.filter(kibanda=kibanda)
             if availableMenu.exists():
                 availableMenu = availableMenu.first()
-                print('availableMenu 1 (DB contents) ', json.dumps(list(availableMenu_qs.values()), indent=4))                # check if available menu is of today
+                print('availableMenu 1 (DB contents) ', json.dumps(list(availableMenu.values()), indent=4))                # check if available menu is of today
                 if availableMenu.updated_at.date() == dt.date.today():
                     serialize = TodayAvailableMenuSerializer(availableMenu)
                     print('serializer 1 ', serialize.data)
@@ -722,7 +722,7 @@ class TodayAvailableMenu(APIView):
                 kibanda_default_menu = kibanda.defaultmenu
                 for item in kibanda_default_menu.menu.all():
                     availableMenu.menu.add(item)
-                print('availableMenu 2 ', json.dumps(availableMenu, indent=4))
+                print('availableMenu 2 ', json.dumps(list(availableMenu.values()), indent=4))
                 availableMenu.save()
                 serialize = TodayAvailableMenuSerializer(availableMenu)
                 print('serializer 2 ', serialize.data)
@@ -738,7 +738,7 @@ class TodayAvailableMenu(APIView):
                 for item in kibanda_default_menu.menu.all():
                     availableMenu.menu.add(item)
 
-                print('availableMenu 3 (created) ', json.dumps(list(created_qs.values()), indent=4))
+                print('availableMenu 3 (created) ', json.dumps(list(availableMenu.values()), indent=4))
                 availableMenu.save()
                 serialize = TodayAvailableMenuSerializer(availableMenu)
                 print('serializer 3 ', serialize.data)
