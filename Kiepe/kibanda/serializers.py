@@ -57,8 +57,7 @@ class TodayAvailableMenuSerializer(ModelSerializer):
             'id',
             'get_kibanda',
             'get_menu',
-            'set_from_default_menu',
-            'get_menu_image'
+            'set_from_default_menu'
         ]
 
 class KibandaMapSerializer(ModelSerializer):

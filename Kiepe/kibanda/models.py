@@ -178,17 +178,18 @@ class AvailableMenu(models.Model):
     
     @property
     def get_menu(self):
-        menus = self.menu.all()
+        items = self.menu.all()
         menuItems = []
-        if (menus.count() == 0):
+        if (items.count() == 0):
             return None
-        for menu in menus:
+        for item in items:
             menuItems.append({
-                "id": menu.id,
-                "menu": menu.menu.name,
-                "price": menu.price,
-                "parent_menu": menu.menu.id,
-                "type": menu.menu.type,
+                "id": item.id,
+                "menu": item.menu.name,
+                "price": item.price,
+                "parent_menu": item.menu.id,
+                "type": item.menu.type,
+                "get_menu_image", item.menu.get_menu_image
             })
         return menuItems
 
