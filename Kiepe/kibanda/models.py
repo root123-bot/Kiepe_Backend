@@ -189,7 +189,7 @@ class AvailableMenu(models.Model):
                 "price": item.price,
                 "parent_menu": item.menu.id,
                 "type": item.menu.type,
-                "get_menu_image", item.menu.get_menu_image
+                "get_menu_image": item.menu.get_menu_image
             })
         return menuItems
 
