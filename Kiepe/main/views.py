@@ -776,15 +776,17 @@ class MarkNotificationAsRead(APIView):
 mark_notification_as_read = MarkNotificationAsRead.as_view()
 
 class UpdateUserProfilePicture(APIView):
-    def post(self, request, *args, **kwargs):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated] 
+
+    def patch(self, request, *args, **kwargs):
         photo = request.data.get('photo')
-        user_id = request.data.get('user_id')
-        print('IM GET CALLED BY LUPE FIASCO', photo, user_id)
+
         try: 
-            user = get_user_model().objects.get(id=int(user_id))
+            user = request.user
 
             if hasattr(user, "customer"):
-                # we're dealing with customer...
+
                 if user.customer:
                     customer = user.customer
                     customer.image = photo
