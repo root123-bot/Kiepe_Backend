@@ -185,11 +185,11 @@ class AvailableMenu(models.Model):
         for item in items:
             menuItems.append({
                 "id": item.id,
-                "menu": item.menu.name,
+                "menu": item.get_menu_name,
                 "price": item.price,
-                "parent_menu": item.menu.id,
-                "type": item.menu.type,
-                "get_menu_image": item.menu.get_menu_image
+                "parent_menu": item.get_menu_id,
+                "type": item.get_menu_type,
+                "get_menu_image": item.get_menu_image
             })
         return menuItems
 
