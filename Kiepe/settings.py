@@ -186,28 +186,53 @@ AUTHENTICATION_BACKENDS = [
     "Kiepe.register.backends.EmailPhoneUsernameAuthenticationBackend",
 ]
 
-
-
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", "")
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", "")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "")
-AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "")
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_LOCATION = os.environ.get("AWS_LOCATION", "")
-
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
-
 # https://stackoverflow.com/questions/79127276/django-static-files-not-uploaded-properly-to-digitalocean-spaces-using-s3
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    },
-    "staticfiles" : {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    },
-}
+# --- AWS S3 Configuration (Used only when variables are defined) ---
+# Check if S3 environment variables are available (e.g., in production)
+using_s3 = all([
+    os.environ.get("AWS_ACCESS_KEY_ID"),
+    os.environ.get("AWS_SECRET_ACCESS_KEY"),
+    os.environ.get("AWS_STORAGE_BUCKET_NAME")
+])
+
+if using_s3:
+    AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", "")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY", "")
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME", "")
+    AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "")
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    AWS_LOCATION = os.environ.get("AWS_LOCATION", "")
+
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+    ]
+    STATIC_URL = 'https://%s/%s/' % (AWS_S3_ENDPOINT_URL, AWS_LOCATION)
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        },
+        "staticfiles" : {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        },
+    }
+else:
+    # --- Local Development Configuration ---
+    # Use local file storage when running locally (env vars missing)
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'static'),
+    ]
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles" : {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
